@@ -1,13 +1,13 @@
 package com.unika.desafio.model;
 
 public enum TipoPessoa {
-    PESSOA_FISICA(1),
-    PESSOA_JURIDICA(2);
+    PESSOA_FISICA(0),
+    PESSOA_JURIDICA(1);
 
-    int codigo;
+    final int codigo;
 
-    TipoPessoa(int codico){
-        this.codigo = codico;
+    TipoPessoa(int codigo){
+        this.codigo = codigo;
     }
 
     public int getCodigo() {

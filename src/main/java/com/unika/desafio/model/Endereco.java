@@ -36,7 +36,6 @@ public class Endereco {
     @Column(name = "PRINCIPAL")
     private boolean principal;
 
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne
     private Monitorador monitorador;
-
 }

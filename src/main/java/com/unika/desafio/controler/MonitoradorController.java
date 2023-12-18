@@ -1,8 +1,11 @@
 package com.unika.desafio.controler;
 
-import com.unika.desafio.model.Monitorador;
+import com.unika.desafio.dto.RequestPessoaDto;
+import com.unika.desafio.dto.ResponsePessoaDto;
+import com.unika.desafio.exceptions.ValidationException;
 import com.unika.desafio.service.MonitoradorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,35 +15,44 @@ import java.util.List;
 @RequestMapping("/monitorador")
 public class MonitoradorController {
     @Autowired
-    MonitoradorService service;
-
+    private MonitoradorService service;
     @PostMapping("/cadastrar")
-    public ResponseEntity<String> cadastrarMonitorador(@RequestBody Monitorador monitorador){
+    public ResponseEntity<ResponsePessoaDto> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
         try{
-            service.cadastrarMonitorador(monitorador);
-            return ResponseEntity.ok().body("Monitorador Cadastrado com sucesso!");
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ResponsePessoaDto responseDto = service.cadastrarMonitorador(requestDto);
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        } catch (ValidationException e){
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Monitorador>> listarMonitoradores(){
+    public ResponseEntity<List<ResponsePessoaDto>> listarMonitoradores(){
         try {
-            List<Monitorador> monitoradorList = service.listarMonitoradores();
-            return ResponseEntity.ok(monitoradorList);
-        } catch (Exception e){
+            List<ResponsePessoaDto> responseList = service.listarMonitoradores();
+            return ResponseEntity.ok(responseList);
+        } catch (ValidationException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("buscar/{id}")
+    public ResponseEntity<ResponsePessoaDto> monitoradorPeloId(@PathVariable Long id){
+        try {
+            ResponsePessoaDto responseDto = service.buscarPeloId(id);
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        } catch (ValidationException e){
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<String> atualizarMonitorador(@RequestBody Monitorador monitorador, @PathVariable Long id){
+    public ResponseEntity<ResponsePessoaDto> atualizarMonitorador(@RequestBody RequestPessoaDto requestDto, @PathVariable Long id){
         try {
-            service.atualizarMonitorador(monitorador, id);
-            return ResponseEntity.ok().body("Monitorador atualizado com sucesso!");
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ResponsePessoaDto responseDto = service.atualizarMonitorador(requestDto, id);
+            return ResponseEntity.ok().body(responseDto);
+        } catch (ValidationException e){
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
@@ -49,7 +61,7 @@ public class MonitoradorController {
         try {
             service.deletarMonitorador(id);
             return ResponseEntity.ok().body("Monitorador Deletado com sucesso!");
-        } catch (Exception e){
+        } catch (ValidationException e){
             return ResponseEntity.notFound().build();
         }
     }
