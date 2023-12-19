@@ -2,7 +2,7 @@ package com.unika.desafio.controler;
 
 import com.unika.desafio.dto.RequestPessoaDto;
 import com.unika.desafio.dto.ResponsePessoaDto;
-import com.unika.desafio.exceptions.ValidationException;
+import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.service.MonitoradorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,52 +17,52 @@ public class MonitoradorController {
     @Autowired
     private MonitoradorService service;
     @PostMapping("/cadastrar")
-    public ResponseEntity<ResponsePessoaDto> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
+    public ResponseEntity<?> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
         try{
             ResponsePessoaDto responseDto = service.cadastrarMonitorador(requestDto);
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-        } catch (ValidationException e){
-            return ResponseEntity.badRequest().body(null);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<ResponsePessoaDto>> listarMonitoradores(){
+    public ResponseEntity<?> listarMonitoradores(){
         try {
             List<ResponsePessoaDto> responseList = service.listarMonitoradores();
-            return ResponseEntity.ok(responseList);
-        } catch (ValidationException e){
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(responseList, HttpStatus.FOUND);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
 
     @GetMapping("buscar/{id}")
-    public ResponseEntity<ResponsePessoaDto> monitoradorPeloId(@PathVariable Long id){
+    public ResponseEntity<?> monitoradorPeloId(@PathVariable Long id){
         try {
             ResponsePessoaDto responseDto = service.buscarPeloId(id);
-            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-        } catch (ValidationException e){
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(responseDto, HttpStatus.FOUND);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<ResponsePessoaDto> atualizarMonitorador(@RequestBody RequestPessoaDto requestDto, @PathVariable Long id){
+    public ResponseEntity<?> atualizarMonitorador(@RequestBody RequestPessoaDto requestDto, @PathVariable Long id){
         try {
             ResponsePessoaDto responseDto = service.atualizarMonitorador(requestDto, id);
-            return ResponseEntity.ok().body(responseDto);
-        } catch (ValidationException e){
-            return ResponseEntity.badRequest().body(null);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<String> deletarMonitorador(@PathVariable Long id){
+    public ResponseEntity<?> deletarMonitorador(@PathVariable Long id){
         try {
             service.deletarMonitorador(id);
-            return ResponseEntity.ok().body("Monitorador Deletado com sucesso!");
-        } catch (ValidationException e){
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>("Monitorador Deletado com sucesso!", HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
 

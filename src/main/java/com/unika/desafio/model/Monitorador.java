@@ -108,4 +108,8 @@ public abstract class Monitorador {
     public void desativar(){
         this.ativo = Boolean.FALSE;
     }
+
+    public void adicionarEndereco(Endereco endereco){
+        enderecoList.add(endereco);
+    }
 }

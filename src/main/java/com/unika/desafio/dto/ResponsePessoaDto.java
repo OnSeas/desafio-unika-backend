@@ -11,10 +11,6 @@ public abstract class ResponsePessoaDto {
     String rg;
     String inscricaoEstadual;
     LocalDate dataNascimento;
-//    String cpf;
-//    String cnpj;
-//    String nome;
-//    String razaoSocial;
 
     public Long getId() {
         return id;
@@ -63,36 +59,4 @@ public abstract class ResponsePessoaDto {
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
-
-//    public String getCpf() {
-//        return cpf;
-//    }
-//
-//    public void setCpf(String cpf) {
-//        this.cpf = cpf;
-//    }
-//
-//    public String getCnpj() {
-//        return cnpj;
-//    }
-//
-//    public void setCnpj(String cnpj) {
-//        this.cnpj = cnpj;
-//    }
-//
-//    public String getNome() {
-//        return nome;
-//    }
-//
-//    public void setNome(String nome) {
-//        this.nome = nome;
-//    }
-//
-//    public String getRazaoSocial() {
-//        return razaoSocial;
-//    }
-//
-//    public void setRazaoSocial(String razaoSocial) {
-//        this.razaoSocial = razaoSocial;
-//    }
 }

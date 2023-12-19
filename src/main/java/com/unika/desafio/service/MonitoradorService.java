@@ -4,12 +4,11 @@ import com.unika.desafio.dto.RequestPessoaDto;
 import com.unika.desafio.dto.ResponsePessoaDto;
 import com.unika.desafio.dto.ResponsePessoaFisicaDto;
 import com.unika.desafio.dto.ResponsePessoaJuridicaDto;
-import com.unika.desafio.exceptions.ValidationException;
-import com.unika.desafio.model.Monitorador;
-import com.unika.desafio.model.PessoaFisica;
-import com.unika.desafio.model.PessoaJuridica;
-import com.unika.desafio.model.TipoPessoa;
+import com.unika.desafio.exceptions.BusinessException;
+import com.unika.desafio.exceptions.ErrorCode;
+import com.unika.desafio.model.*;
 import com.unika.desafio.repository.MonitoradorRepository;
+import com.unika.desafio.validations.monitorador.IMonitoradorJaExiste;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +26,14 @@ public class MonitoradorService {
 
     private ModelMapper mapper = new ModelMapper();
 
+    @Autowired
+    private List<IMonitoradorJaExiste> monitoradorJaExisteValidations;
+
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
+
+        // Validando se já existe
+        monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto));
+        dadosEstaoVazios(requestDto);
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
         return getResponseByTipo(repository.save(monitorador));
@@ -41,13 +48,15 @@ public class MonitoradorService {
     }
 
     public ResponsePessoaDto buscarPeloId(Long id) {
-        if(repository.existsById(id)){
-            return getResponseByTipo(repository.findById(id).get());
-        }
-            throw new ValidationException("Monitorador não encontrado", 404);
+        monitoradorExitePeloId(id);
+        return getResponseByTipo(repository.getReferenceById(id));
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
+        monitoradorExitePeloId(id);
+
+        monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informações que não pode ser repetidas
+
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         Monitorador monitoradorDB = repository.getReferenceById(id);
 
@@ -60,31 +69,42 @@ public class MonitoradorService {
     }
 
     public void deletarMonitorador(@PathVariable Long id){
-        if(repository.existsById(id)){
-            repository.deleteById(id);
-        }else{
-            throw new ValidationException("Monitorador não encontrado!", 404);
-        }
+        monitoradorExitePeloId(id);
+        repository.deleteById(id);
+    }
+
+    public Monitorador adcionarEndereco(Endereco endereco, Long id){
+        monitoradorExitePeloId(id);
+        Monitorador monitorador = repository.getReferenceById(id);
+        monitorador.adicionarEndereco(endereco);
+        return repository.save(monitorador);
     }
 
     // MÉTODOS ENCAPSULADOS
     private Monitorador getMonitoradorByTipo(RequestPessoaDto requestDto){
-        if (requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
+        if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             return mapper.map(requestDto, PessoaFisica.class);
-        } else if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_JURIDICA){
+        } else{
             return mapper.map(requestDto, PessoaJuridica.class);
-        } else {
-            throw new ValidationException("Tipo de pessoa não reconhecido.", 400);
         }
     }
 
     private ResponsePessoaDto getResponseByTipo(Monitorador monitorador){
-        if (monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
+        if(monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             return mapper.map(monitorador, ResponsePessoaFisicaDto.class);
-        } else if(monitorador.getTipoPessoa() == TipoPessoa.PESSOA_JURIDICA){
+        } else{
             return mapper.map(monitorador, ResponsePessoaJuridicaDto.class);
-        } else {
-            throw new ValidationException("Tipo de pessoa não reconhecido.", 400);
         }
+    }
+
+    // VALIDACOES
+    private void monitoradorExitePeloId(Long id){
+        if(!repository.existsById(id))
+            throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+    }
+
+    private void dadosEstaoVazios(RequestPessoaDto requestDto){
+        if(false) // TODO Melhor maneira de achar se tem algum valor vazio?
+            throw new BusinessException(ErrorCode.CAMPOS_VAZIOS);
     }
 }
