@@ -1,8 +1,10 @@
 package com.unika.desafio.dto;
 
+import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.TipoPessoa;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public abstract class ResponsePessoaDto {
     Long id;
@@ -11,6 +13,7 @@ public abstract class ResponsePessoaDto {
     String rg;
     String inscricaoEstadual;
     LocalDate dataNascimento;
+    List<Endereco> enderecoList;
 
     public Long getId() {
         return id;
@@ -58,5 +61,13 @@ public abstract class ResponsePessoaDto {
 
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    public List<Endereco> getEnderecoList() {
+        return enderecoList;
+    }
+
+    public void setEnderecoList(List<Endereco> enderecoList) {
+        this.enderecoList = enderecoList;
     }
 }

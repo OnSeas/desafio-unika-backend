@@ -9,7 +9,10 @@ public enum ErrorCode {
     CNPJ_REPETIDO(HttpStatus.BAD_REQUEST,"O CNPJ já foi cadastrado, tente buscar pelo monitorador."),
     RG_REPETIDO(HttpStatus.BAD_REQUEST,"O RG já foi cadastrado, tente buscar pelo monitorador."),
     INSCRICAO_ESTADUAL_REPETIDA(HttpStatus.BAD_REQUEST,"A Inscricao Estadual já foi cadastrado, tente buscar pelo monitorador."),
-    CAMPOS_VAZIOS(HttpStatus.BAD_REQUEST,"Há campos obrigatórios vazios.");
+    CAMPOS_VAZIOS(HttpStatus.BAD_REQUEST,"Há campos obrigatórios vazios."),
+    ENDERECO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND,"O endereco não foi encontrado."),
+    MONITOR_SEM_ENDERECOS(HttpStatus.NOT_FOUND,"O monitor não possuí nenhum endereço."),
+    ENDERECO_PRINCIPAL_UNICO(HttpStatus.BAD_REQUEST,"Apenas um endereço pode ser selecionado como principal.");
 
     HttpStatus status;
     String message;

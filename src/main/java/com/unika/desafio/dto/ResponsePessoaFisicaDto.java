@@ -19,4 +19,19 @@ public class ResponsePessoaFisicaDto extends ResponsePessoaDto{
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    @Override
+    public String toString() {
+        return "ResponsePessoaFisicaDto{" +
+                "cpf='" + cpf + '\'' +
+                ", nome='" + nome + '\'' +
+                ", id=" + id +
+                ", tipoPessoa=" + tipoPessoa +
+                ", email='" + email + '\'' +
+                ", rg='" + rg + '\'' +
+                ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                ", enderecoList=" + enderecoList +
+                '}';
+    }
 }

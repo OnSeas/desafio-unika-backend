@@ -25,4 +25,12 @@ public class PessoaJuridica extends Monitorador{
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
     }
+
+    @Override
+    public String toString() {
+        return "PessoaJuridica{" +
+                "cnpj='" + cnpj + '\'' +
+                ", razaoSocial='" + razaoSocial + '\'' +
+                '}';
+    }
 }

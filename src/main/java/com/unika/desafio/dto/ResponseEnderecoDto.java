@@ -12,7 +12,7 @@ public class ResponseEnderecoDto {
     String cidade;
     String estado;
     Boolean principal;
-    Monitorador monitorador;
+    Long monitoradorId;
 
     public void setId(Long id) {
         this.id = id;
@@ -50,7 +50,63 @@ public class ResponseEnderecoDto {
         this.principal = principal;
     }
 
-    public void setMonitorador(Monitorador monitorador) {
-        this.monitorador = monitorador;
+    public Long getId() {
+        return id;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public String getTelefone() {
+        return Telefone;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public Boolean getPrincipal() {
+        return principal;
+    }
+
+    public Long getMonitoradorId() {
+        return monitoradorId;
+    }
+
+    public void setMonitoradorId(Long monitoradorId) {
+        this.monitoradorId = monitoradorId;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseEnderecoDto{" +
+                "id=" + id +
+                ", endereco='" + endereco + '\'' +
+                ", numero='" + numero + '\'' +
+                ", cep='" + cep + '\'' +
+                ", bairro='" + bairro + '\'' +
+                ", Telefone='" + Telefone + '\'' +
+                ", cidade='" + cidade + '\'' +
+                ", estado='" + estado + '\'' +
+                ", principal=" + principal +
+                ", monitorador=" + monitoradorId +
+                '}';
     }
 }

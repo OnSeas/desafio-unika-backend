@@ -1,9 +1,6 @@
 package com.unika.desafio.service;
 
-import com.unika.desafio.dto.RequestPessoaDto;
-import com.unika.desafio.dto.ResponsePessoaDto;
-import com.unika.desafio.dto.ResponsePessoaFisicaDto;
-import com.unika.desafio.dto.ResponsePessoaJuridicaDto;
+import com.unika.desafio.dto.*;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.*;
@@ -13,10 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,30 +25,33 @@ public class MonitoradorService {
     private List<IMonitoradorJaExiste> monitoradorJaExisteValidations;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
-
         // Validando se já existe
         monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto));
         dadosEstaoVazios(requestDto);
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
-        return getResponseByTipo(repository.save(monitorador));
+        return getResponsePeloTipo(repository.save(monitorador));
     }
 
     public List<ResponsePessoaDto> listarMonitoradores(){
         List<Monitorador> monitoradorList = repository.findAll();
         return monitoradorList.
                 stream()
-                .map(this::getResponseByTipo)
+                .map(this::getResponsePeloTipo)
                 .collect(Collectors.toList());
     }
 
-    public ResponsePessoaDto buscarPeloId(Long id) {
-        monitoradorExitePeloId(id);
-        return getResponseByTipo(repository.getReferenceById(id));
+    public ResponsePessoaDto getMonitorResponsePeloId(Long id) {
+        return getResponsePeloTipo(pegarMonitorPeloId(id)); // TODO Debugar e descobrir pq o get response não transforma o cpf/cnpj e o nome/razaoSocial apenas nessa chamada
+    }
+
+    public Monitorador pegarMonitorPeloId(Long id){
+        monitoradorExiste(id);
+        return repository.getReferenceById(id);
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
-        monitoradorExitePeloId(id);
+        monitoradorExiste(id);
 
         monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informações que não pode ser repetidas
 
@@ -65,19 +63,12 @@ public class MonitoradorService {
                 monitoradorDB,
                 "id", "ativo");
 
-        return getResponseByTipo(repository.save(monitoradorDB));
+        return getResponsePeloTipo(repository.save(monitoradorDB));
     }
 
-    public void deletarMonitorador(@PathVariable Long id){
-        monitoradorExitePeloId(id);
+    public void deletarMonitorador(Long id){
+        monitoradorExiste(id);
         repository.deleteById(id);
-    }
-
-    public Monitorador adcionarEndereco(Endereco endereco, Long id){
-        monitoradorExitePeloId(id);
-        Monitorador monitorador = repository.getReferenceById(id);
-        monitorador.adicionarEndereco(endereco);
-        return repository.save(monitorador);
     }
 
     // MÉTODOS ENCAPSULADOS
@@ -89,7 +80,7 @@ public class MonitoradorService {
         }
     }
 
-    private ResponsePessoaDto getResponseByTipo(Monitorador monitorador){
+    private ResponsePessoaDto getResponsePeloTipo(Monitorador monitorador){
         if(monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             return mapper.map(monitorador, ResponsePessoaFisicaDto.class);
         } else{
@@ -97,8 +88,8 @@ public class MonitoradorService {
         }
     }
 
-    // VALIDACOES
-    private void monitoradorExitePeloId(Long id){
+    // Validacoes
+    public void monitoradorExiste(Long id){
         if(!repository.existsById(id))
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }

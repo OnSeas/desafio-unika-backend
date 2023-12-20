@@ -19,4 +19,19 @@ public class ResponsePessoaJuridicaDto extends ResponsePessoaDto{
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
     }
+
+    @Override
+    public String toString() {
+        return "ResponsePessoaJuridicaDto{" +
+                "cnpj='" + cnpj + '\'' +
+                ", razaoSocial='" + razaoSocial + '\'' +
+                ", id=" + id +
+                ", tipoPessoa=" + tipoPessoa +
+                ", email='" + email + '\'' +
+                ", rg='" + rg + '\'' +
+                ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                ", enderecoList=" + enderecoList +
+                '}';
+    }
 }

@@ -1,5 +1,7 @@
 package com.unika.desafio.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -34,7 +36,8 @@ public abstract class Monitorador {
     @Column(name = "ATIVO")
     private Boolean ativo;
 
-    @OneToMany(mappedBy = "monitorador")
+    @OneToMany(mappedBy = "monitorador", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Endereco> enderecoList;
 
     public Long getId() {

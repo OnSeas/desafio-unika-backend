@@ -1,7 +1,7 @@
 package com.unika.desafio.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import org.springframework.expression.spel.ast.Identifier;
 
 @Entity
 @Table(name = "ESTAGIO_ENDERECO")
@@ -19,7 +19,7 @@ public class Endereco {
     private String numero;
 
     @Column(name = "CEP")
-    private int cep;
+    private String cep;
 
     @Column(name = "BAIRRO")
     private String bairro;
@@ -37,6 +37,7 @@ public class Endereco {
     private Boolean principal;
 
     @ManyToOne
+    @JsonBackReference
     private Monitorador monitorador;
 
     public Long getId() {
@@ -63,11 +64,11 @@ public class Endereco {
         this.numero = numero;
     }
 
-    public int getCep() {
+    public String getCep() {
         return cep;
     }
 
-    public void setCep(int cep) {
+    public void setCep(String cep) {
         this.cep = cep;
     }
 
@@ -117,5 +118,21 @@ public class Endereco {
 
     public void setMonitorador(Monitorador monitorador) {
         this.monitorador = monitorador;
+    }
+
+    @Override
+    public String toString() {
+        return "Endereco{" +
+                "id=" + id +
+                ", endereco='" + endereco + '\'' +
+                ", numero='" + numero + '\'' +
+                ", cep=" + cep +
+                ", bairro='" + bairro + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", cidade='" + cidade + '\'' +
+                ", estado='" + estado + '\'' +
+                ", principal=" + principal +
+                ", monitorador=" + monitorador +
+                '}';
     }
 }

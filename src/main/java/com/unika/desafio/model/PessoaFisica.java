@@ -25,4 +25,12 @@ public class PessoaFisica extends Monitorador{
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    @Override
+    public String toString() {
+        return "PessoaFisica{" +
+                "cpf='" + cpf + '\'' +
+                ", nome='" + nome + '\'' +
+                '}';
+    }
 }
