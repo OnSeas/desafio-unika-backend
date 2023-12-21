@@ -1,5 +1,6 @@
 package com.unika.desafio.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.TipoPessoa;
 

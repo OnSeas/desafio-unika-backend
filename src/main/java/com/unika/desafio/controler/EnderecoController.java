@@ -21,7 +21,7 @@ public class EnderecoController {
     public ResponseEntity<?> getEnderecoPrincipal(@PathVariable Long idMonitor){
         try {
             ResponseEnderecoDto responseDto = service.getEnderecoPrincipal(idMonitor);
-            return new ResponseEntity<>(responseDto, HttpStatus.FOUND);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
@@ -31,7 +31,7 @@ public class EnderecoController {
     public ResponseEntity<?> getEnderecosMonitor(@PathVariable Long idMonitor){
         try {
             List<ResponseEnderecoDto> responseDtoList = service.listarEnderecosMonitorResponse(idMonitor);
-            return new ResponseEntity<>(responseDtoList, HttpStatus.FOUND);
+            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }

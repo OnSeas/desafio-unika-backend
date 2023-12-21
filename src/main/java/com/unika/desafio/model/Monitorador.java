@@ -1,6 +1,5 @@
 package com.unika.desafio.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -25,7 +24,7 @@ public abstract class Monitorador {
     private String email;
 
     @Column(name = "RG")
-    private String RG;
+    private String RG; // TODO talvez tem que mover para Pessoa Física
 
     @Column(name = "INSCRICAO_ESTADUAL")
     private String inscricaoEstadual;

@@ -42,7 +42,7 @@ public class MonitoradorController {
     public ResponseEntity<?> listarMonitoradores(){
         try {
             List<ResponsePessoaDto> responseList = monitoradorService.listarMonitoradores();
-            return new ResponseEntity<>(responseList, HttpStatus.FOUND);
+            return new ResponseEntity<>(responseList, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
@@ -52,7 +52,7 @@ public class MonitoradorController {
     public ResponseEntity<?> monitoradorPeloId(@PathVariable Long id){
         try {
             ResponsePessoaDto responseDto = monitoradorService.getMonitorResponsePeloId(id);
-            return new ResponseEntity<>(responseDto, HttpStatus.FOUND);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
