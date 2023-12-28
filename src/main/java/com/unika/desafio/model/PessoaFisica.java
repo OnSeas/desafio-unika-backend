@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class PessoaFisica extends Monitorador{
+public class PessoaFisica extends Monitorador{ // TODO Aplicação de máscaras nos gets e sets (usados pelo model mapper)
 
     @Column(name = "CPF", nullable = false)
     private String cpf;

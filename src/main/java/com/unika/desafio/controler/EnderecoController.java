@@ -62,6 +62,19 @@ public class EnderecoController {
         }
     }
 
+    @PutMapping("/{idEndereco}/tornar-principal/{idMonitor}")
+    public ResponseEntity<?> tornarEnderecoPrincipal(@PathVariable Long idEndereco, @PathVariable Long idMonitor){
+        try {
+            service.tornarEnderecoPrincipal(idMonitor, idEndereco);
+            return new ResponseEntity<>("O endereço foi tornado principal.", HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
+
+
+    // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

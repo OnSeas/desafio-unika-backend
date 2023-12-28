@@ -14,8 +14,12 @@ public enum ErrorCode {
     MONITORADOR_SEM_ENDERECO_PRINCIPAL(HttpStatus.BAD_REQUEST,"O monitorador não possuí nenhum endereço principal."),
     ENDERECO_PRINCIPAL_UNICO(HttpStatus.BAD_REQUEST,"Apenas um endereço pode ser selecionado como principal."),
     REQUISICAO_PF_INVALIDA(HttpStatus.BAD_REQUEST,"Ao enviar uma pessoa física é necessário enviar: CPF, RG e nome."),
-    REQUISICAO_PJ_INVALIDA(HttpStatus.BAD_REQUEST,"Ao enviar uma pessoa juridíca é necessário enviar: CNPJ, inscricao estadual e razão Social."),
-    TIPO_PESSOA_INVALIDO(HttpStatus.BAD_REQUEST,"O tipo de pessoa enviado não é válido!");
+    REQUISICAO_PJ_INVALIDA(HttpStatus.BAD_REQUEST, "Ao enviar uma pessoa juridíca é necessário enviar: CNPJ, inscricao estadual e razão Social."),
+    TIPO_PESSOA_INVALIDO(HttpStatus.BAD_REQUEST,"O tipo de pessoa enviado não é válido!"),
+    MONITORADOR_JA_ATIVO(HttpStatus.BAD_REQUEST,"O monitorador já está ativo!"),
+    MONITORADOR_JA_DESATIVADO(HttpStatus.BAD_REQUEST,"O monitorador já está desativado!"),
+    ENDERECO_JA_E_PRINCIPAL(HttpStatus.BAD_REQUEST,"Este já é o endereco principal do monitorador!"),
+    ENDERECO_NAO_E_DO_MONITORADOR(HttpStatus.BAD_REQUEST,"Este endereço não pertence ao monitorador solicitado!");
 
     HttpStatus status;
     String message;

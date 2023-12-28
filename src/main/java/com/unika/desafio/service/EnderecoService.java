@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class EnderecoService {
         monitoradorService.monitoradorExiste(id);
         temAlgumEndereco(id);
 
-        Endereco enderecoPrincipal = repository.findByMonitoradorIdAndPrincipal(id, true);
+        Endereco enderecoPrincipal = repository.findByMonitoradorIdAndPrincipalIsTrue(id);
 
         if(enderecoPrincipal== null)
             throw new BusinessException(ErrorCode.MONITORADOR_SEM_ENDERECO_PRINCIPAL);
@@ -76,12 +77,10 @@ public class EnderecoService {
             BeanUtils.copyProperties(
                     endereco,
                     enderecoDB,
-                    "id", "monitorador");
+                    "id", "monitorador", "principal");
 
             return mapper.map(repository.save(enderecoDB), ResponseEnderecoDto.class);
-        } else {
-            throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
-        }
+        } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
     }
 
     public void deletarEndereco(Long idEndereco){
@@ -89,9 +88,27 @@ public class EnderecoService {
         repository.deleteById(idEndereco);
     }
 
+    public void tornarEnderecoPrincipal(Long idMonitor, Long idEndereco){
+        Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
+        if (enderecoOptional.isPresent()){
+            Endereco novoEnderecoPrincipal = enderecoOptional.get();
+
+            validarEndereco(novoEnderecoPrincipal, idMonitor);
+
+            Endereco enderecoPrincipalAntigo = repository.findByMonitoradorIdAndPrincipalIsTrue(idMonitor);
+            if (enderecoPrincipalAntigo != null){
+                enderecoPrincipalAntigo.setPrincipal(Boolean.FALSE);
+            }
+
+            novoEnderecoPrincipal.setPrincipal(Boolean.TRUE);
+            repository.save(novoEnderecoPrincipal);
+
+        } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
+    }
+
     // VALIDACOES
     private void temOutroEnderecoPrincipal(Long idMonitor){
-        if(repository.countByMonitoradorIdAndPrincipal(idMonitor, true) > 0){
+        if(repository.findByMonitoradorIdAndPrincipalIsTrue(idMonitor) != null){
             throw new BusinessException(ErrorCode.ENDERECO_PRINCIPAL_UNICO);
         }
     }
@@ -105,6 +122,14 @@ public class EnderecoService {
     private void temAlgumEndereco(Long idMonitor){
         if(repository.countByMonitoradorId(idMonitor) == 0){
             throw new BusinessException(ErrorCode.MONITOR_SEM_ENDERECOS);
+        }
+    }
+
+    private void validarEndereco(Endereco endereco, Long idMonitor){
+        if (endereco.getPrincipal()){
+            if (Objects.equals(endereco.getMonitorador().getId(), idMonitor)){
+                throw new BusinessException(ErrorCode.ENDERECO_JA_E_PRINCIPAL);
+            } else throw new BusinessException(ErrorCode.ENDERECO_NAO_E_DO_MONITORADOR);
         }
     }
 }

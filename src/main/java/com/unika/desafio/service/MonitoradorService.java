@@ -87,9 +87,35 @@ public class MonitoradorService {
         repository.deleteById(id);
     }
 
+    public void ativarMonitorador(Long id){
+        Optional<Monitorador> optionalMonitorador = repository.findById(id);
+        if(optionalMonitorador.isPresent()){
+            Monitorador monitorador = optionalMonitorador.get();
+
+            if(monitorador.isAtivo())
+                throw new BusinessException(ErrorCode.MONITORADOR_JA_ATIVO);
+
+            monitorador.ativar();
+            repository.save(monitorador);
+        } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+    }
+
+    public void desativarMonitorador(Long id){
+        Optional<Monitorador> optionalMonitorador = repository.findById(id);
+        if(optionalMonitorador.isPresent()){
+            Monitorador monitorador = optionalMonitorador.get();
+
+            if(!monitorador.isAtivo())
+                throw new BusinessException(ErrorCode.MONITORADOR_JA_DESATIVADO);
+
+            monitorador.desativar();
+            repository.save(monitorador);
+        } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+    }
+
     // MÉTODOS ENCAPSULADOS
     private Monitorador getMonitoradorByTipo(RequestPessoaDto requestDto){
-        isRequisisaoValida(requestDto);
+        RequisisaoEValida(requestDto);
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             return mapper.map(requestDto, PessoaFisica.class);
         } else{
@@ -103,7 +129,7 @@ public class MonitoradorService {
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
-    private void isRequisisaoValida(RequestPessoaDto requestDto){
+    private void RequisisaoEValida(RequestPessoaDto requestDto){
         switch (requestDto.getTipoPessoa()){
             case PESSOA_FISICA:
                 if(requestDto.getCpf() == null || requestDto.getNome() == null || requestDto.getRg() == null)

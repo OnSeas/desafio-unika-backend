@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "ESTAGIO_ENDERECO")
-public class Endereco {
+public class Endereco { // TODO Aplicação de máscaras nos gets e sets (usados pelo model mapper)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

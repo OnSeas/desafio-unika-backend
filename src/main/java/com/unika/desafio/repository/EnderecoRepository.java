@@ -9,9 +9,7 @@ import java.util.List;
 @Repository
 public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
 
-    Endereco findByMonitoradorIdAndPrincipal(Long id, boolean principal);
-
-    Integer countByMonitoradorIdAndPrincipal(Long id, boolean principal);
+    Endereco findByMonitoradorIdAndPrincipalIsTrue(Long id);
 
     Integer countByMonitoradorId(Long idMonitor);
 

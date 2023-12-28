@@ -9,7 +9,6 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import jakarta.validation.Valid;
-import jakarta.validation.executable.ValidateOnExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +91,29 @@ public class MonitoradorController {
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
+
+    @PutMapping("/ativar/{idMonitorador}")
+    public ResponseEntity<?> ativarMonitorador(@PathVariable Long idMonitorador){
+        try {
+            monitoradorService.ativarMonitorador(idMonitorador);
+            return new ResponseEntity<>("O monitorador foi ativado!", HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
+    @PutMapping("/desativar/{idMonitorador}")
+    public ResponseEntity<?> desativarMonitorador(@PathVariable Long idMonitorador){
+        try {
+            monitoradorService.desativarMonitorador(idMonitorador);
+            return new ResponseEntity<>("O monitorador foi desativado!", HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
+
+    // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
