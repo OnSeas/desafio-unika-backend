@@ -9,31 +9,31 @@ public class Endereco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_ENDERECO")
+    @Column(name = "ID_ENDERECO", nullable = false)
     private Long id;
 
-    @Column(name = "ENDERECO")
+    @Column(name = "ENDERECO", nullable = false)
     private String endereco;
 
-    @Column(name = "NUMERO")
+    @Column(name = "NUMERO", nullable = false)
     private String numero;
 
-    @Column(name = "CEP")
+    @Column(name = "CEP", nullable = false)
     private String cep;
 
-    @Column(name = "BAIRRO")
+    @Column(name = "BAIRRO", nullable = false)
     private String bairro;
 
-    @Column(name = "TELEFONE")
+    @Column(name = "TELEFONE", nullable = false)
     private String telefone;
 
-    @Column(name = "CIDADE")
+    @Column(name = "CIDADE", nullable = false)
     private String cidade;
 
-    @Column(name = "ESTADO")
+    @Column(name = "ESTADO", nullable = false)
     private String estado;
 
-    @Column(name = "PRINCIPAL")
+    @Column(name = "PRINCIPAL", nullable = false)
     private Boolean principal;
 
     @ManyToOne

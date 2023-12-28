@@ -13,26 +13,20 @@ public abstract class Monitorador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_MONITORADOR")
+    @Column(name = "ID_MONITORADOR", nullable = false)
     private Long id;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "TIPO_PESSOA")
+    @Column(name = "TIPO_PESSOA", nullable = false)
     private TipoPessoa tipoPessoa;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Column(name = "RG")
-    private String RG; // TODO talvez tem que mover para Pessoa Física
-
-    @Column(name = "INSCRICAO_ESTADUAL")
-    private String inscricaoEstadual;
-
-    @Column(name = "DATA_NASCIMENTO")
+    @Column(name = "DATA_NASCIMENTO", nullable = false)
     private LocalDate dataNascimento;
 
-    @Column(name = "ATIVO")
+    @Column(name = "ATIVO", nullable = false)
     private Boolean ativo;
 
     @OneToMany(mappedBy = "monitorador", cascade = CascadeType.ALL)
@@ -61,22 +55,6 @@ public abstract class Monitorador {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRG() {
-        return RG;
-    }
-
-    public void setRG(String RG) {
-        this.RG = RG;
-    }
-
-    public String getInscricaoEstadual() {
-        return inscricaoEstadual;
-    }
-
-    public void setInscricaoEstadual(String inscricaoEstadual) {
-        this.inscricaoEstadual = inscricaoEstadual;
     }
 
     public LocalDate getDataNascimento() {

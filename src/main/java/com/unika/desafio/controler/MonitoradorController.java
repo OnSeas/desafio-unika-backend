@@ -8,14 +8,19 @@ import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
-import org.modelmapper.ModelMapper;
+import jakarta.validation.Valid;
+import jakarta.validation.executable.ValidateOnExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -26,10 +31,8 @@ public class MonitoradorController {
     @Autowired
     private EnderecoService enderecoService;
 
-    ModelMapper mapper = new ModelMapper();
-
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
+    public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -51,7 +54,7 @@ public class MonitoradorController {
     @GetMapping("buscar/{id}")
     public ResponseEntity<?> monitoradorPeloId(@PathVariable Long id){
         try {
-            ResponsePessoaDto responseDto = monitoradorService.getMonitorResponsePeloId(id);
+            ResponsePessoaDto responseDto = monitoradorService.getMonitoradorResponsePeloId(id);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -59,7 +62,7 @@ public class MonitoradorController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizarMonitorador(@RequestBody RequestPessoaDto requestDto, @PathVariable Long id){
+    public ResponseEntity<?> atualizarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto, @PathVariable Long id){
         try {
             ResponsePessoaDto responseDto = monitoradorService.atualizarMonitorador(requestDto, id);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -80,13 +83,28 @@ public class MonitoradorController {
 
     @PostMapping("/{idMonitorador}/endereco")
     @Transactional
-    public ResponseEntity<?> cadastrarEndereco(@PathVariable Long idMonitorador, @RequestBody RequestEnderecoDto requestDto){
+    public ResponseEntity<?> cadastrarEndereco(@PathVariable Long idMonitorador, @RequestBody @Valid RequestEnderecoDto requestDto){
         try {
-            Monitorador monitorador = monitoradorService.pegarMonitorPeloId(idMonitorador);
+            Monitorador monitorador = monitoradorService.pegarMonitoradorPeloId(idMonitorador);
             ResponseEnderecoDto responseDto = enderecoService.cadastrarEndereco(monitorador, requestDto);
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+
+
 }

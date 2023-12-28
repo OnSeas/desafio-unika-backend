@@ -7,15 +7,13 @@ import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.repository.EnderecoRepository;
-import com.unika.desafio.service.apisExternas.ConexaoViaCep;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.cbor.Jackson2CborDecoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,8 +26,6 @@ public class EnderecoService {
     private MonitoradorService monitoradorService;
 
     private ModelMapper mapper = new ModelMapper();
-
-    private ConexaoViaCep conexaoViaCep;
 
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto){
         monitoradorService.monitoradorExiste(monitorador.getId());
@@ -45,42 +41,47 @@ public class EnderecoService {
         return mapper.map(endereco, ResponseEnderecoDto.class);
     }
 
-    public List<ResponseEnderecoDto> listarEnderecosMonitorResponse(Long id){
-        List<Endereco> enderecoList = listarEnderecosMonitor(id);
+    public List<ResponseEnderecoDto> listarEnderecosMonitoradorResponse(Long id){
+        List<Endereco> enderecoList = listarEnderecosMonitorador(id);
         return enderecoList
                 .stream()
                 .map(e -> mapper.map(e, ResponseEnderecoDto.class))
                 .collect(Collectors.toList());
     }
 
-    public List<Endereco> listarEnderecosMonitor(Long id){
+    public List<Endereco> listarEnderecosMonitorador(Long id){
         monitoradorService.monitoradorExiste(id);
         temAlgumEndereco(id);
 
-        return repository.getReferenceByMonitoradorId(id);
+        return repository.findAllByMonitoradorId(id);
     }
 
     public ResponseEnderecoDto getEnderecoPrincipal(Long id){
         monitoradorService.monitoradorExiste(id);
         temAlgumEndereco(id);
 
-        return mapper.map(repository.findByMonitoradorIdAndPrincipal(id, true), ResponseEnderecoDto.class);
+        Endereco enderecoPrincipal = repository.findByMonitoradorIdAndPrincipal(id, true);
+
+        if(enderecoPrincipal== null)
+            throw new BusinessException(ErrorCode.MONITORADOR_SEM_ENDERECO_PRINCIPAL);
+
+        return mapper.map(enderecoPrincipal, ResponseEnderecoDto.class);
     }
 
     public ResponseEnderecoDto editarEndereco(Long idEndereco, Endereco endereco){
-        enderecoExite(idEndereco);
-        Endereco enderecoDB = repository.getReferenceById(idEndereco);
+        Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
 
-        if(endereco.getPrincipal()){
-            temOutroEnderecoPrincipal(endereco.getMonitorador().getId());
+        if (enderecoOptional.isPresent()){
+            Endereco enderecoDB = enderecoOptional.get();
+            BeanUtils.copyProperties(
+                    endereco,
+                    enderecoDB,
+                    "id", "monitorador");
+
+            return mapper.map(repository.save(enderecoDB), ResponseEnderecoDto.class);
+        } else {
+            throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
         }
-
-        BeanUtils.copyProperties(
-                endereco,
-                enderecoDB,
-                "id", "monitorador");
-
-        return mapper.map(repository.save(enderecoDB), ResponseEnderecoDto.class);
     }
 
     public void deletarEndereco(Long idEndereco){

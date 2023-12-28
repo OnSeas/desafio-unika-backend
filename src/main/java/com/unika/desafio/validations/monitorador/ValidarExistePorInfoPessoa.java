@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidarExistePorCpfOuCnpj implements IMonitoradorJaExiste{
+public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
 
     @Autowired
     private MonitoradorRepository repository;
@@ -20,9 +20,15 @@ public class ValidarExistePorCpfOuCnpj implements IMonitoradorJaExiste{
             if(repository.findByCpf(requestDto.getCpf()) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
+            if (repository.findbyrg(requestDto.getRg()) != null){
+                throw new BusinessException(ErrorCode.RG_REPETIDO);
+            }
         }else{
             if(repository.findByCnpj(requestDto.getCnpj()) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
+            }
+            if(repository.findByInscricaoEstadual(requestDto.getInscricaoEstadual()) != null){
+                throw new BusinessException(ErrorCode.INSCRICAO_ESTADUAL_REPETIDA);
             }
         }
     }
@@ -33,9 +39,15 @@ public class ValidarExistePorCpfOuCnpj implements IMonitoradorJaExiste{
             if(repository.findByDifferentCpf(requestDto.getCpf(), id) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
+            if(repository.findByDifferentRg(requestDto.getRg(), id) != null){
+                throw new BusinessException(ErrorCode.RG_REPETIDO);
+            }
         }else{
             if(repository.findByDifferentCnpj(requestDto.getCnpj(), id) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
+            }
+            if(repository.findByDifferentInscricaoEstadual(requestDto.getInscricaoEstadual(), id) != null){
+                throw new BusinessException(ErrorCode.INSCRICAO_ESTADUAL_REPETIDA);
             }
         }
     }

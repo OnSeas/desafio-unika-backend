@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidarExistePorEmail implements IMonitoradorJaExiste{
+public class ValidarExistePorEmail implements IMonitoradorJaExiste {
 
     @Autowired
     private MonitoradorRepository repository;

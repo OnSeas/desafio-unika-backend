@@ -11,9 +11,9 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
 
     Endereco findByMonitoradorIdAndPrincipal(Long id, boolean principal);
 
-    List<Endereco> getReferenceByMonitoradorId(long id);
-
     Integer countByMonitoradorIdAndPrincipal(Long id, boolean principal);
 
     Integer countByMonitoradorId(Long idMonitor);
+
+    List<Endereco> findAllByMonitoradorId(Long id);
 }

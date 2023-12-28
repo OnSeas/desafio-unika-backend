@@ -1,9 +1,13 @@
 package com.unika.desafio.service;
 
-import com.unika.desafio.dto.*;
+import com.unika.desafio.dto.RequestPessoaDto;
+import com.unika.desafio.dto.ResponsePessoaDto;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
-import com.unika.desafio.model.*;
+import com.unika.desafio.model.Monitorador;
+import com.unika.desafio.model.PessoaFisica;
+import com.unika.desafio.model.PessoaJuridica;
+import com.unika.desafio.model.TipoPessoa;
 import com.unika.desafio.repository.MonitoradorRepository;
 import com.unika.desafio.validations.monitorador.IMonitoradorJaExiste;
 import org.modelmapper.ModelMapper;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,48 +27,59 @@ public class MonitoradorService {
     private ModelMapper mapper = new ModelMapper();
 
     @Autowired
-    private List<IMonitoradorJaExiste> monitoradorJaExisteValidations;
+    private List<IMonitoradorJaExiste> monitoradorJaExiste;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
-        // Validando se já existe
-        monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto));
-        dadosEstaoVazios(requestDto);
+        monitoradorJaExiste.forEach(v -> v.validar(requestDto));// Validando se já existe
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
-        return getResponsePeloTipo(repository.save(monitorador));
+        return mapper.map(repository.save(monitorador), ResponsePessoaDto.class);
     }
 
     public List<ResponsePessoaDto> listarMonitoradores(){
         List<Monitorador> monitoradorList = repository.findAll();
         return monitoradorList.
                 stream()
-                .map(this::getResponsePeloTipo)
+                .map(m -> mapper.map(m, ResponsePessoaDto.class))
                 .collect(Collectors.toList());
     }
 
-    public ResponsePessoaDto getMonitorResponsePeloId(Long id) {
-        return getResponsePeloTipo(pegarMonitorPeloId(id)); // TODO Debugar e descobrir pq o get response não transforma o cpf/cnpj e o nome/razaoSocial apenas nessa chamada
+    public ResponsePessoaDto getMonitoradorResponsePeloId(Long id) {
+        return mapper.map(pegarMonitoradorPeloId(id), ResponsePessoaDto.class);
     }
 
-    public Monitorador pegarMonitorPeloId(Long id){
-        monitoradorExiste(id);
-        return repository.getReferenceById(id);
+    public Monitorador pegarMonitoradorPeloId(Long id){
+        Optional<Monitorador> optionalMonitorador = repository.findById(id);
+        if (optionalMonitorador.isPresent()){
+            Monitorador monitorador = optionalMonitorador.get();
+            System.out.println("Monitorador BD: " + monitorador.getClass());
+            return repository.getReferenceById(id);
+        } else {
+            throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+        }
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
-        monitoradorExiste(id);
+        monitoradorJaExiste.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informação que não pode ser repetida
 
-        monitoradorJaExisteValidations.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informações que não pode ser repetidas
+        Optional<Monitorador> optionalMonitorador = repository.findById(id);
+        if (optionalMonitorador.isPresent()){
+            Monitorador monitoradorDB = optionalMonitorador.get();
 
-        Monitorador monitorador = getMonitoradorByTipo(requestDto);
-        Monitorador monitoradorDB = repository.getReferenceById(id);
+            Monitorador monitorador = getMonitoradorByTipo(requestDto);
+            System.out.println(monitorador);
 
-        BeanUtils.copyProperties(
-                monitorador,
-                monitoradorDB,
-                "id", "ativo");
+            BeanUtils.copyProperties(
+                    monitorador,
+                    monitoradorDB,
+                    "id", "ativo");
 
-        return getResponsePeloTipo(repository.save(monitoradorDB));
+            System.out.println(monitoradorDB);
+
+            return mapper.map(repository.save(monitoradorDB), ResponsePessoaDto.class);
+        } else {
+            throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+        }
     }
 
     public void deletarMonitorador(Long id){
@@ -73,18 +89,11 @@ public class MonitoradorService {
 
     // MÉTODOS ENCAPSULADOS
     private Monitorador getMonitoradorByTipo(RequestPessoaDto requestDto){
+        isRequisisaoValida(requestDto);
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             return mapper.map(requestDto, PessoaFisica.class);
         } else{
             return mapper.map(requestDto, PessoaJuridica.class);
-        }
-    }
-
-    private ResponsePessoaDto getResponsePeloTipo(Monitorador monitorador){
-        if(monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-            return mapper.map(monitorador, ResponsePessoaFisicaDto.class);
-        } else{
-            return mapper.map(monitorador, ResponsePessoaJuridicaDto.class);
         }
     }
 
@@ -94,8 +103,18 @@ public class MonitoradorService {
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
-    private void dadosEstaoVazios(RequestPessoaDto requestDto){
-        if(false) // TODO Melhor maneira de achar se tem algum valor vazio?
-            throw new BusinessException(ErrorCode.CAMPOS_VAZIOS);
+    private void isRequisisaoValida(RequestPessoaDto requestDto){
+        switch (requestDto.getTipoPessoa()){
+            case PESSOA_FISICA:
+                if(requestDto.getCpf() == null || requestDto.getNome() == null || requestDto.getRg() == null)
+                    throw new BusinessException(ErrorCode.REQUISICAO_PF_INVALIDA);
+                break;
+            case PESSOA_JURIDICA:
+                if (requestDto.getCnpj() == null || requestDto.getRazaoSocial() == null || requestDto.getInscricaoEstadual() == null || requestDto.getInscricaoEstadual().isBlank())
+                    throw new BusinessException(ErrorCode.REQUISICAO_PJ_INVALIDA);
+                break;
+            default:
+                throw new BusinessException(ErrorCode.TIPO_PESSOA_INVALIDO);
+        }
     }
 }

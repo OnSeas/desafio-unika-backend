@@ -16,9 +16,11 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
     @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.cnpj LIKE :cnpj")
     Monitorador findByCnpj(String cnpj);
 
-    boolean existsByRG(String rg);
+    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.rg LIKE :rg")
+    Monitorador findbyrg(String rg);
 
-    boolean existsByInscricaoEstadual(String inscricaoEstadual);
+    @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.inscricaoEstadual LIKE :inscricaoEstadual")
+    Monitorador findByInscricaoEstadual(String inscricaoEstadual);
 
     @Query(value = "SELECT m FROM Monitorador m WHERE m.email LIKE :email AND m.id != :id")
     Monitorador findByDifferentEmail(String email, Long id);
@@ -29,10 +31,10 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
     @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.cnpj LIKE :cnpj AND pj.id != :id")
     Monitorador findByDifferentCnpj(String cnpj, Long id);
 
-    @Query(value = "SELECT m FROM Monitorador m WHERE m.RG LIKE :rg AND m.id != :id")
-    Monitorador findByDifferentRG(String rg, Long id);
+    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.rg LIKE :rg AND pf.id != :id")
+    Monitorador findByDifferentRg(String rg, Long id);
 
-    @Query(value = "SELECT m FROM Monitorador m WHERE m.inscricaoEstadual LIKE :inscricaoEstadual AND m.id != :id")
+    @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.inscricaoEstadual LIKE :inscricaoEstadual AND pj.id != :id")
     Monitorador findByDifferentInscricaoEstadual(String inscricaoEstadual, Long id);
 
 }

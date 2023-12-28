@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 
 @Entity
 public class PessoaJuridica extends Monitorador{
-    @Column(name = "CNPJ")
+
+    @Column(name = "CNPJ", nullable = false)
     private String cnpj;
 
-    @Column(name = "RAZAO_SOCIAL")
+    @Column(name = "RAZAO_SOCIAL", nullable = false)
     private String razaoSocial;
+
+    @Column(name = "INSCRICAO_ESTADUAL", nullable = false)
+    private String inscricaoEstadual;
 
     public String getCnpj() {
         return cnpj;
@@ -24,6 +28,14 @@ public class PessoaJuridica extends Monitorador{
 
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
+    }
+
+    public String getInscricaoEstadual() {
+        return inscricaoEstadual;
+    }
+
+    public void setInscricaoEstadual(String inscricaoEstadual) {
+        this.inscricaoEstadual = inscricaoEstadual;
     }
 
     @Override
