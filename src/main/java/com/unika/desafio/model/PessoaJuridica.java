@@ -15,11 +15,11 @@ public class PessoaJuridica extends Monitorador{ // TODO Aplicação de máscara
     private String inscricaoEstadual;
 
     public String getCnpj() {
-        return cnpj;
+        return aplicarMascaraCnpj(cnpj);
     }
 
     public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+        this.cnpj = removerFormacataoCnpj(cnpj);
     }
 
     public String getRazaoSocial() {
@@ -36,6 +36,19 @@ public class PessoaJuridica extends Monitorador{ // TODO Aplicação de máscara
 
     public void setInscricaoEstadual(String inscricaoEstadual) {
         this.inscricaoEstadual = inscricaoEstadual;
+    }
+
+    private String removerFormacataoCnpj(String cnpj) {
+        return cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
+    }
+
+    private String aplicarMascaraCnpj(String cnpj){
+        StringBuilder cnpjBuilder = new StringBuilder(cnpj);
+        cnpjBuilder.insert(12, "-");
+        cnpjBuilder.insert(8, "/");
+        cnpjBuilder.insert(5, ".");
+        cnpjBuilder.insert(2, ".");
+        return cnpjBuilder.toString();
     }
 
     @Override

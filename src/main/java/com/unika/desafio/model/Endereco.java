@@ -65,11 +65,11 @@ public class Endereco { // TODO Aplicação de máscaras nos gets e sets (usados
     }
 
     public String getCep() {
-        return cep;
+        return aplicarFormacataoCep(this.cep);
     }
 
     public void setCep(String cep) {
-        this.cep = cep;
+        this.cep = removerFormacataoCep(cep);
     }
 
     public String getBairro() {
@@ -81,11 +81,11 @@ public class Endereco { // TODO Aplicação de máscaras nos gets e sets (usados
     }
 
     public String getTelefone() {
-        return telefone;
+        return aplicarFormatacaoTelefone(this.telefone);
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        this.telefone = removerFormatacaoTelefone(telefone);
     }
 
     public String getCidade() {
@@ -118,6 +118,30 @@ public class Endereco { // TODO Aplicação de máscaras nos gets e sets (usados
 
     public void setMonitorador(Monitorador monitorador) {
         this.monitorador = monitorador;
+    }
+
+
+    // Utilização de máscaras para transformação de Model Dto
+    private String removerFormacataoCep(String cep) {
+        return cep.replaceAll("[-]", "");
+    }
+
+    private String removerFormatacaoTelefone(String telefone){
+        return telefone.replaceAll("[(]", "").replaceAll("[)]", "").replaceAll("[-]", "");
+    }
+
+    private String aplicarFormacataoCep(String cep) {
+        StringBuilder cepBuilder = new StringBuilder(cep);
+        cepBuilder.insert(5, "-");
+        return cepBuilder.toString();
+    }
+
+    private String aplicarFormatacaoTelefone(String telefone){
+        StringBuilder telefoneBuilder = new StringBuilder(telefone);
+        telefoneBuilder.insert(telefone.length()-4, "-");
+        telefoneBuilder.insert(2, ")");
+        telefoneBuilder.insert(0, "(");
+        return telefoneBuilder.toString();
     }
 
     @Override

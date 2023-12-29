@@ -37,4 +37,5 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
     @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.inscricaoEstadual LIKE :inscricaoEstadual AND pj.id != :id")
     Monitorador findByDifferentInscricaoEstadual(String inscricaoEstadual, Long id);
 
+    Monitorador findByEmail(String email);
 }

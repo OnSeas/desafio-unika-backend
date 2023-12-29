@@ -1,8 +1,6 @@
 package com.unika.desafio.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @Entity
 public class PessoaFisica extends Monitorador{ // TODO Aplicação de máscaras nos gets e sets (usados pelo model mapper)
@@ -17,11 +15,11 @@ public class PessoaFisica extends Monitorador{ // TODO Aplicação de máscaras 
     private String rg;
 
     public String getCpf() {
-        return cpf;
+        return aplicarMascaraCpf(cpf);
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.cpf = removerFormacataoCpf(cpf);
     }
 
     public String getNome() {
@@ -38,6 +36,20 @@ public class PessoaFisica extends Monitorador{ // TODO Aplicação de máscaras 
 
     public void setRG(String RG) {
         this.rg = RG;
+    }
+
+
+    // Máscaras de CPF
+    private String removerFormacataoCpf(String cpf) {
+        return cpf.replaceAll("[.]", "").replaceAll("[-]", "");
+    }
+
+    private String aplicarMascaraCpf(String cpf){
+        StringBuilder cpfBuilder = new StringBuilder(cpf);
+        cpfBuilder.insert(9, "-");
+        cpfBuilder.insert(6, ".");
+        cpfBuilder.insert(3, ".");
+        return cpfBuilder.toString();
     }
 
     @Override

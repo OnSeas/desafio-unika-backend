@@ -113,6 +113,34 @@ public class MonitoradorService {
         } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
+    // Pesquisas
+
+    // Buscar por Email
+    public ResponsePessoaDto buscarPorEmail(String email){
+        Monitorador monitorador = repository.findByEmail(email);
+        if (monitorador != null){
+            return mapper.map(monitorador, ResponsePessoaDto.class);
+        } else throw new BusinessException(ErrorCode.NENHUM_MONITORADOR_POR_EMAIL);
+    }
+
+    // Buscar por CPF
+    public ResponsePessoaDto buscarPorCpf(String cpf){
+        cpf = cpf.replaceAll("[.]", "").replaceAll("[-]", "");
+        PessoaFisica pessoaFisica = (PessoaFisica) repository.findByCpf(cpf);
+        if (pessoaFisica != null){
+            return mapper.map(pessoaFisica, ResponsePessoaDto.class);
+        } else throw new BusinessException(ErrorCode.PESSOA_POR_CPF);
+    }
+
+    // Buscar por CNPJ
+    public ResponsePessoaDto buscarPorCnpj(String cnpj){
+        cnpj = cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
+        PessoaJuridica pessoaJuridica = (PessoaJuridica) repository.findByCnpj(cnpj);
+        if (pessoaJuridica != null){
+            return mapper.map(pessoaJuridica, ResponsePessoaDto.class);
+        } else throw new BusinessException(ErrorCode.PESSOA_POR_CNPJ);
+    }
+
     // MÉTODOS ENCAPSULADOS
     private Monitorador getMonitoradorByTipo(RequestPessoaDto requestDto){
         RequisisaoEValida(requestDto);

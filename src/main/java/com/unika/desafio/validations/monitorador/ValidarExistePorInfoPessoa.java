@@ -17,14 +17,14 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
     @Override
     public void validar(RequestPessoaDto requestDto) {
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-            if(repository.findByCpf(requestDto.getCpf()) != null){
+            if(repository.findByCpf(requestDto.getCpfSemFormatacao()) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
             if (repository.findbyrg(requestDto.getRg()) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }
         }else{
-            if(repository.findByCnpj(requestDto.getCnpj()) != null){
+            if(repository.findByCnpj(requestDto.getCnpjSemFormatacao()) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
             }
             if(repository.findByInscricaoEstadual(requestDto.getInscricaoEstadual()) != null){
@@ -36,14 +36,14 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
     @Override
     public void validar(RequestPessoaDto requestDto, Long id) {
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-            if(repository.findByDifferentCpf(requestDto.getCpf(), id) != null){
+            if(repository.findByDifferentCpf(requestDto.getCpfSemFormatacao(), id) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
             if(repository.findByDifferentRg(requestDto.getRg(), id) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }
         }else{
-            if(repository.findByDifferentCnpj(requestDto.getCnpj(), id) != null){
+            if(repository.findByDifferentCnpj(requestDto.getCnpjSemFormatacao(), id) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
             }
             if(repository.findByDifferentInscricaoEstadual(requestDto.getInscricaoEstadual(), id) != null){

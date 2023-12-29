@@ -11,7 +11,7 @@ public enum ErrorCode {
     INSCRICAO_ESTADUAL_REPETIDA(HttpStatus.BAD_REQUEST,"A Inscricao Estadual já foi cadastrado, tente buscar pelo monitorador."),
     ENDERECO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND,"O endereco não foi encontrado."),
     MONITOR_SEM_ENDERECOS(HttpStatus.NOT_FOUND,"O monitor não possuí nenhum endereço."),
-    MONITORADOR_SEM_ENDERECO_PRINCIPAL(HttpStatus.BAD_REQUEST,"O monitorador não possuí nenhum endereço principal."),
+    MONITORADOR_SEM_ENDERECO_PRINCIPAL(HttpStatus.NOT_FOUND,"O monitorador não possuí nenhum endereço principal."),
     ENDERECO_PRINCIPAL_UNICO(HttpStatus.BAD_REQUEST,"Apenas um endereço pode ser selecionado como principal."),
     REQUISICAO_PF_INVALIDA(HttpStatus.BAD_REQUEST,"Ao enviar uma pessoa física é necessário enviar: CPF, RG e nome."),
     REQUISICAO_PJ_INVALIDA(HttpStatus.BAD_REQUEST, "Ao enviar uma pessoa juridíca é necessário enviar: CNPJ, inscricao estadual e razão Social."),
@@ -19,7 +19,10 @@ public enum ErrorCode {
     MONITORADOR_JA_ATIVO(HttpStatus.BAD_REQUEST,"O monitorador já está ativo!"),
     MONITORADOR_JA_DESATIVADO(HttpStatus.BAD_REQUEST,"O monitorador já está desativado!"),
     ENDERECO_JA_E_PRINCIPAL(HttpStatus.BAD_REQUEST,"Este já é o endereco principal do monitorador!"),
-    ENDERECO_NAO_E_DO_MONITORADOR(HttpStatus.BAD_REQUEST,"Este endereço não pertence ao monitorador solicitado!");
+    ENDERECO_NAO_E_DO_MONITORADOR(HttpStatus.NOT_FOUND,"Este endereço não pertence ao monitorador solicitado!"),
+    NENHUM_MONITORADOR_POR_EMAIL(HttpStatus.NOT_FOUND,"Não há pessoa com este email!"),
+    PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoa com este CPF!"),
+    PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoa com este CNPJ!");
 
     HttpStatus status;
     String message;
