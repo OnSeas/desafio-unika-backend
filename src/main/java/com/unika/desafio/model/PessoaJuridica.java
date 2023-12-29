@@ -3,7 +3,7 @@ package com.unika.desafio.model;
 import jakarta.persistence.*;
 
 @Entity
-public class PessoaJuridica extends Monitorador{ // TODO Aplicação de máscaras nos gets e sets (usados pelo model mapper)
+public class PessoaJuridica extends Monitorador{
 
     @Column(name = "CNPJ", nullable = false)
     private String cnpj;

@@ -10,10 +10,8 @@ public class ResponseEnderecoDto {
     Long id;
     String endereco;
     String numero;
-    // Implementar mascára
     String cep;
     String bairro;
-    // Implementar mascára
     String Telefone;
     String cidade;
     String estado;

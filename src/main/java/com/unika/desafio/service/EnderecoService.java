@@ -7,11 +7,14 @@ import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.repository.EnderecoRepository;
+import com.unika.desafio.service.apisExternas.ConexaoViaCep;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,7 +31,7 @@ public class EnderecoService {
 
     private ModelMapper mapper = new ModelMapper();
 
-    public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto){
+    public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
         monitoradorService.monitoradorExiste(monitorador.getId());
 
         Endereco endereco = mapper.map(requestDto, Endereco.class);
@@ -37,6 +40,8 @@ public class EnderecoService {
         if(endereco.getPrincipal()){
             temOutroEnderecoPrincipal(monitorador.getId());
         }
+
+        validarCepExiste(endereco.getCep());
 
         repository.save(endereco);
         return mapper.map(endereco, ResponseEnderecoDto.class);
@@ -131,5 +136,18 @@ public class EnderecoService {
                 throw new BusinessException(ErrorCode.ENDERECO_JA_E_PRINCIPAL);
             } else throw new BusinessException(ErrorCode.ENDERECO_NAO_E_DO_MONITORADOR);
         }
+    }
+
+    private void validarCepExiste(String cep) throws IOException, InterruptedException {
+        ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
+        HttpResponse<String> response = conexaoViaCep.getEnderecoPeloCep(cep);
+
+        System.out.println(response);
+        System.out.println(response.body());
+
+        if (response.body().contains("\"erro\": true")){
+            throw new BusinessException(ErrorCode.CEP_INVALIDO);
+        }
+
     }
 }

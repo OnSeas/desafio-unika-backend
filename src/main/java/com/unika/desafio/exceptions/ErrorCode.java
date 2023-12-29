@@ -22,7 +22,8 @@ public enum ErrorCode {
     ENDERECO_NAO_E_DO_MONITORADOR(HttpStatus.NOT_FOUND,"Este endereço não pertence ao monitorador solicitado!"),
     NENHUM_MONITORADOR_POR_EMAIL(HttpStatus.NOT_FOUND,"Não há pessoa com este email!"),
     PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoa com este CPF!"),
-    PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoa com este CNPJ!");
+    PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoa com este CNPJ!"),
+    CEP_INVALIDO(HttpStatus.NOT_FOUND,"Este CEP não foi encontrado, tem certeza que informou o CEP correto?");
 
     HttpStatus status;
     String message;

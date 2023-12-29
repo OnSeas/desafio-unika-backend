@@ -17,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,8 @@ public class MonitoradorController {
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        } catch (IOException | InterruptedException e){
+            return new ResponseEntity<>("Houve um erro interno na conexão com ViaCEP", HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 

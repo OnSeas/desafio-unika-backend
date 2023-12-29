@@ -3,7 +3,7 @@ package com.unika.desafio.model;
 import jakarta.persistence.*;
 
 @Entity
-public class PessoaFisica extends Monitorador{ // TODO Aplicação de máscaras nos gets e sets (usados pelo model mapper)
+public class PessoaFisica extends Monitorador{
 
     @Column(name = "CPF", nullable = false)
     private String cpf;
