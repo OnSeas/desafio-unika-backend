@@ -144,6 +144,26 @@ public class MonitoradorController {
         }
     }
 
+    @GetMapping("buscar-pf")
+    public ResponseEntity<?> buscarPessoasFisicas(){
+        try {
+            List<ResponsePessoaDto> responseDtoList = monitoradorService.getAllPF();
+            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
+    @GetMapping("buscar-pj")
+    public ResponseEntity<?> buscarPessoasJuridicas(){
+        try {
+            List<ResponsePessoaDto> responseDtoList = monitoradorService.getAllPJ();
+            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
 
     // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -141,6 +141,22 @@ public class MonitoradorService {
         } else throw new BusinessException(ErrorCode.PESSOA_POR_CNPJ);
     }
 
+    public List<ResponsePessoaDto> getAllPF(){
+        List<Monitorador> pessoaFisicaList = repository.findByTipoPessoa(TipoPessoa.PESSOA_FISICA);
+        return pessoaFisicaList.
+                stream()
+                .map(m -> mapper.map(m, ResponsePessoaDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<ResponsePessoaDto> getAllPJ(){
+        List<Monitorador> pessoaFisicaList = repository.findByTipoPessoa(TipoPessoa.PESSOA_JURIDICA);
+        return pessoaFisicaList.
+                stream()
+                .map(m -> mapper.map(m, ResponsePessoaDto.class))
+                .collect(Collectors.toList());
+    }
+
     // MÉTODOS ENCAPSULADOS
     private Monitorador getMonitoradorByTipo(RequestPessoaDto requestDto){
         RequisisaoEValida(requestDto);

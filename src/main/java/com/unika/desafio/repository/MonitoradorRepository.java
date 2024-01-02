@@ -1,9 +1,13 @@
 package com.unika.desafio.repository;
 
 import com.unika.desafio.model.Monitorador;
+import com.unika.desafio.model.PessoaFisica;
+import com.unika.desafio.model.TipoPessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> {
@@ -38,4 +42,6 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
     Monitorador findByDifferentInscricaoEstadual(String inscricaoEstadual, Long id);
 
     Monitorador findByEmail(String email);
+
+    List<Monitorador> findByTipoPessoa(TipoPessoa tipoPessoa);
 }
