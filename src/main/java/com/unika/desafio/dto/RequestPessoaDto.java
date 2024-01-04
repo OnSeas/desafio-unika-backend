@@ -1,12 +1,15 @@
 package com.unika.desafio.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.unika.desafio.model.TipoPessoa;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -24,6 +27,7 @@ public class RequestPessoaDto {
 
     @NotNull(message = "A data de nascimento não pode ser vazia.")
     @Past
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     LocalDate dataNascimento;
 
     @CPF(message = "O CPF informado é inválido!")
