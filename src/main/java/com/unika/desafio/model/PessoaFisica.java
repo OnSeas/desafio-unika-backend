@@ -19,7 +19,7 @@ public class PessoaFisica extends Monitorador{
     }
 
     public void setCpf(String cpf) {
-        this.cpf = removerFormacataoCpf(cpf);
+        this.cpf = removerFormatacaoCpf(cpf);
     }
 
     public String getNome() {
@@ -31,16 +31,16 @@ public class PessoaFisica extends Monitorador{
     }
 
     public String getRG() {
-        return rg;
+        return aplicarMascaraRg(rg);
     }
 
-    public void setRG(String RG) {
-        this.rg = RG;
+    public void setRG(String rg) {
+        this.rg = removerFormatacaoRg(rg);
     }
 
 
     // Máscaras de CPF
-    private String removerFormacataoCpf(String cpf) {
+    private String removerFormatacaoCpf(String cpf) {
         return cpf.replaceAll("[.]", "").replaceAll("[-]", "");
     }
 
@@ -50,6 +50,18 @@ public class PessoaFisica extends Monitorador{
         cpfBuilder.insert(6, ".");
         cpfBuilder.insert(3, ".");
         return cpfBuilder.toString();
+    }
+
+    private String removerFormatacaoRg(String rg){
+        return rg.replaceAll("[.]", "").replaceAll("[-]", "");
+    }
+
+    private String aplicarMascaraRg(String rg){
+        StringBuilder rgBuilder = new StringBuilder(rg);
+        rgBuilder.insert(8, "-");
+        rgBuilder.insert(5, ".");
+        rgBuilder.insert(2,".");
+        return rgBuilder.toString();
     }
 
     @Override

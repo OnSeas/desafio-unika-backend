@@ -29,7 +29,7 @@ public class RequestPessoaDto {
     @CPF(message = "O CPF informado é inválido!")
     String cpf;
 
-    @Pattern(regexp = "\\d{9}")
+    @Pattern(regexp = "\\d{2}.?\\d{3}.?\\d{3}-?\\d", message = "O RG informado é inválido!")
     String rg;
 
     @Size(min = 3, max = 200, message = "O nome deve ter entre 3 e 200 caracteres!")
@@ -41,10 +41,9 @@ public class RequestPessoaDto {
     @Size(min = 3, max = 200, message = "A razão social deve ter entre 3 e 200 caracteres!")
     String razaoSocial;
 
-   // TODO Descobrir como funciona
-   @Pattern(regexp = "\\d{14}")
+   // TODO descobrir se tem que adcionar validações específicas
+    @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
-
 
    // Para validações de repetição no Banco de dados
    public String getCpfSemFormatacao(){
@@ -53,5 +52,9 @@ public class RequestPessoaDto {
 
     public String getCnpjSemFormatacao(){
         return this.cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
+    }
+
+    public String getRGSemFormatacao(){
+        return this.rg.replaceAll("[.]", "").replaceAll("[-]", "");
     }
 }

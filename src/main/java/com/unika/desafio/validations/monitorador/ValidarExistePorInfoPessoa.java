@@ -20,7 +20,7 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
             if(repository.findByCpf(requestDto.getCpfSemFormatacao()) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
-            if (repository.findbyrg(requestDto.getRg()) != null){
+            if (repository.findbyrg(requestDto.getRGSemFormatacao()) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }
         }else{
@@ -39,7 +39,7 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
             if(repository.findByDifferentCpf(requestDto.getCpfSemFormatacao(), id) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
-            if(repository.findByDifferentRg(requestDto.getRg(), id) != null){
+            if(repository.findByDifferentRg(requestDto.getRGSemFormatacao(), id) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }
         }else{
