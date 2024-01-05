@@ -31,7 +31,7 @@ public class Endereco {
     private String cidade;
 
     @Column(name = "ESTADO", nullable = false)
-    private String estado;
+    private UF estado;
 
     @Column(name = "PRINCIPAL", nullable = false)
     private Boolean principal;
@@ -96,11 +96,11 @@ public class Endereco {
         this.cidade = cidade;
     }
 
-    public String getEstado() {
+    public UF getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(UF estado) {
         this.estado = estado;
     }
 

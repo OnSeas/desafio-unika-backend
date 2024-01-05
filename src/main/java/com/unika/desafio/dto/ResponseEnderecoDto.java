@@ -1,6 +1,7 @@
 package com.unika.desafio.dto;
 
 import com.unika.desafio.model.Monitorador;
+import com.unika.desafio.model.UF;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ public class ResponseEnderecoDto {
     String bairro;
     String Telefone;
     String cidade;
-    String estado;
+    UF estado;
     Boolean principal;
     Long monitoradorId; // TODO não precisa
 

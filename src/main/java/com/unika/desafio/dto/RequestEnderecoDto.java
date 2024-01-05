@@ -1,5 +1,6 @@
 package com.unika.desafio.dto;
 
+import com.unika.desafio.model.UF;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -31,8 +32,8 @@ public class RequestEnderecoDto {
     @NotBlank
     String cidade;
 
-    @NotBlank
-    String estado;
+    @NotNull
+    UF estado;
 
     @NotNull
     Boolean principal;
