@@ -116,28 +116,37 @@ public class MonitoradorService {
     // Pesquisas
 
     // Buscar por Email
-    public ResponsePessoaDto buscarPorEmail(String email){
-        Monitorador monitorador = repository.findByEmail(email);
-        if (monitorador != null){
-            return mapper.map(monitorador, ResponsePessoaDto.class);
+    public List<ResponsePessoaDto> buscarPorEmail(String email){
+        List<Monitorador> monitoradores = repository.findByEmailContaining(email);
+        if (!monitoradores.isEmpty()){
+            return monitoradores
+                    .stream()
+                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
+                    .collect(Collectors.toList());
         } else throw new BusinessException(ErrorCode.NENHUM_MONITORADOR_POR_EMAIL);
     }
 
     // Buscar por CPF
-    public ResponsePessoaDto buscarPorCpf(String cpf){
+    public List<ResponsePessoaDto> buscarPorCpf(String cpf){
         cpf = cpf.replaceAll("[.]", "").replaceAll("[-]", "");
-        PessoaFisica pessoaFisica = (PessoaFisica) repository.findByCpf(cpf);
-        if (pessoaFisica != null){
-            return mapper.map(pessoaFisica, ResponsePessoaDto.class);
+        List<Monitorador> monitoradores = repository.findByCpfContaining(cpf);
+        if (!monitoradores.isEmpty()){
+            return monitoradores
+                    .stream()
+                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
+                    .collect(Collectors.toList());
         } else throw new BusinessException(ErrorCode.PESSOA_POR_CPF);
     }
 
     // Buscar por CNPJ
-    public ResponsePessoaDto buscarPorCnpj(String cnpj){
+    public List<ResponsePessoaDto> buscarPorCnpj(String cnpj){
         cnpj = cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
-        PessoaJuridica pessoaJuridica = (PessoaJuridica) repository.findByCnpj(cnpj);
-        if (pessoaJuridica != null){
-            return mapper.map(pessoaJuridica, ResponsePessoaDto.class);
+        List<Monitorador> monitoradores = repository.findByCnpjContaining(cnpj);
+        if (!monitoradores.isEmpty()){
+            return monitoradores
+                    .stream()
+                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
+                    .collect(Collectors.toList());
         } else throw new BusinessException(ErrorCode.PESSOA_POR_CNPJ);
     }
 

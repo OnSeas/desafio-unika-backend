@@ -20,9 +20,9 @@ public enum ErrorCode {
     MONITORADOR_JA_DESATIVADO(HttpStatus.BAD_REQUEST,"O monitorador já está desativado!"),
     ENDERECO_JA_E_PRINCIPAL(HttpStatus.BAD_REQUEST,"Este já é o endereco principal do monitorador!"),
     ENDERECO_NAO_E_DO_MONITORADOR(HttpStatus.NOT_FOUND,"Este endereço não pertence ao monitorador solicitado!"),
-    NENHUM_MONITORADOR_POR_EMAIL(HttpStatus.NOT_FOUND,"Não há pessoa com este email!"),
-    PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoa com este CPF!"),
-    PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoa com este CNPJ!"),
+    NENHUM_MONITORADOR_POR_EMAIL(HttpStatus.NOT_FOUND,"Não há pessoas com este email!"),
+    PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoas com este CPF!"),
+    PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoas com este CNPJ!"),
     CEP_INVALIDO(HttpStatus.NOT_FOUND,"Este CEP não foi encontrado, tem certeza que informou o CEP correto?");
 
     HttpStatus status;

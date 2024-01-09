@@ -118,7 +118,7 @@ public class MonitoradorController {
     @GetMapping("buscar/email/{email}")
     public ResponseEntity<?> monitoradorPeloEmail(@PathVariable String email){
         try {
-            ResponsePessoaDto responseDto = monitoradorService.buscarPorEmail(email);
+            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorEmail(email);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -128,16 +128,17 @@ public class MonitoradorController {
     @GetMapping("buscar/cpf/{cpf}")
     public ResponseEntity<?> monitoradorPeloCpf(@PathVariable String cpf){
         try {
-            ResponsePessoaDto responseDto = monitoradorService.buscarPorCpf(cpf);
+            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorCpf(cpf);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
+
     @GetMapping("buscar/cnpj/{cnpj}")
     public ResponseEntity<?> monitoradorPeloCnpj(@PathVariable String cnpj){
         try {
-            ResponsePessoaDto responseDto = monitoradorService.buscarPorCnpj(cnpj);
+            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorCnpj(cnpj);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
