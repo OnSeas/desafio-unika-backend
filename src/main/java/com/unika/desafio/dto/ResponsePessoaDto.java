@@ -21,11 +21,13 @@ public class ResponsePessoaDto {
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     LocalDate dataNascimento;
+
     List<Endereco> enderecoList;
     String cpf;
     String nome;
     String cnpj;
     String razaoSocial;
+    Boolean ativo;
 
     @Override
     public String toString() {

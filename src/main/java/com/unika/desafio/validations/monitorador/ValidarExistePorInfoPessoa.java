@@ -8,6 +8,8 @@ import com.unika.desafio.repository.MonitoradorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+// TODO dividir em mais classes. Ta muito lotado.
+
 @Component
 public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
 

@@ -34,6 +34,7 @@ public class MonitoradorController {
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
+            System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
@@ -64,6 +65,7 @@ public class MonitoradorController {
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto, @PathVariable Long id){
         try {
+            System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.atualizarMonitorador(requestDto, id);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (BusinessException e){

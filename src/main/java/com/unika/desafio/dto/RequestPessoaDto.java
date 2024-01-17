@@ -2,14 +2,12 @@ package com.unika.desafio.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.unika.desafio.model.TipoPessoa;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -60,5 +58,20 @@ public class RequestPessoaDto {
 
     public String getRGSemFormatacao(){
         return this.rg.replaceAll("[.]", "").replaceAll("[-]", "");
+    }
+
+    @Override
+    public String toString() {
+        return "RequestPessoaDto{" +
+                "tipoPessoa=" + tipoPessoa +
+                ", email='" + email + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                ", cpf='" + cpf + '\'' +
+                ", rg='" + rg + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cnpj='" + cnpj + '\'' +
+                ", razaoSocial='" + razaoSocial + '\'' +
+                ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                '}';
     }
 }
