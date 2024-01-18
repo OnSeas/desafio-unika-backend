@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -20,7 +21,7 @@ public class ResponsePessoaDto {
     String inscricaoEstadual;
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
-    LocalDate dataNascimento;
+    Date dataNascimento;
 
     List<Endereco> enderecoList;
     String cpf;
