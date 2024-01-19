@@ -74,6 +74,16 @@ public class EnderecoService {
         return mapper.map(enderecoPrincipal, ResponseEnderecoDto.class);
     }
 
+    public ResponseEnderecoDto getEndereco(Long idEndereco) {
+        Optional<Endereco> optionalEndereco = repository.findById(idEndereco);
+        if(optionalEndereco.isPresent()){
+            Endereco endereco = optionalEndereco.get();
+            return mapper.map(endereco, ResponseEnderecoDto.class);
+        } else {
+            throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
+        }
+    }
+
     public ResponseEnderecoDto editarEndereco(Long idEndereco, Endereco endereco){
         Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
 

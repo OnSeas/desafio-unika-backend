@@ -32,6 +32,16 @@ public class EnderecoController {
         }
     }
 
+    @GetMapping("/buscar/{idEndereco}")
+    public ResponseEntity<?> getEndereco(@PathVariable Long idEndereco){
+        try {
+            ResponseEnderecoDto responseDto = service.getEndereco(idEndereco);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        }
+    }
+
     @GetMapping("/listar/{idMonitor}")
     public ResponseEntity<?> getEnderecosMonitor(@PathVariable Long idMonitor){
         try {

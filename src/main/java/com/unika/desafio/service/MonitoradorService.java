@@ -54,7 +54,7 @@ public class MonitoradorService {
         if (optionalMonitorador.isPresent()){
             Monitorador monitorador = optionalMonitorador.get();
             System.out.println("Monitorador BD: " + monitorador.getClass());
-            return repository.getReferenceById(id);
+            return monitorador;
         } else {
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
         }
