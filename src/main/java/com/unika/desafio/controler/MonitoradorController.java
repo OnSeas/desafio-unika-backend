@@ -36,6 +36,9 @@ public class MonitoradorController {
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
+            requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
+                responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
+            });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());

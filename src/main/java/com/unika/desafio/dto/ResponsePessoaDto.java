@@ -23,7 +23,7 @@ public class ResponsePessoaDto {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     Date dataNascimento;
 
-    List<Endereco> enderecoList;
+    List<ResponseEnderecoDto> enderecoList;
     String cpf;
     String nome;
     String cnpj;

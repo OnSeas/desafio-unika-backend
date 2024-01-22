@@ -17,7 +17,7 @@ public class ResponseEnderecoDto {
     String cidade;
     UF estado;
     Boolean principal;
-    Long monitoradorId; // TODO não precisa
+    Long monitoradorId;
 
     @Override
     public String toString() {

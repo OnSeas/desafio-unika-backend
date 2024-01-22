@@ -31,8 +31,7 @@ public class MonitoradorService {
     private List<IMonitoradorJaExiste> monitoradorJaExiste;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
-//        requisisaoEValida(requestDto);
-        monitoradorJaExiste.forEach(v -> v.validar(requestDto));// Validando se já existe
+        monitoradorJaExiste.forEach(v -> v.validar(requestDto)); // Validando se já existe
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
         return mapper.map(repository.save(monitorador), ResponsePessoaDto.class);
@@ -62,7 +61,6 @@ public class MonitoradorService {
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
-//        requisisaoEValida(requestDto);
         monitoradorJaExiste.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informação que não pode ser repetida
 
         Optional<Monitorador> optionalMonitorador = repository.findById(id);
@@ -183,8 +181,4 @@ public class MonitoradorService {
         if(!repository.existsById(id))
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
-
-//    private void requisisaoEValida(RequestPessoaDto requestDto){
-//        MonitoradorValido.requisicaoValida(requestDto);
-//    }
 }
