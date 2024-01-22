@@ -9,8 +9,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
-import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -47,6 +47,10 @@ public class RequestPessoaDto {
    // TODO descobrir se tem que adcionar validações específicas
     @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
+
+    @NotNull(message = "Lista de endereços precisa ser enviada!")
+    @NotEmpty(message = "É necessário enviar pelo menos um endereço!")
+    List<RequestEnderecoDto> enderecoList;
 
    // Para validações de repetição no Banco de dados
    public String getCpfSemFormatacao(){
