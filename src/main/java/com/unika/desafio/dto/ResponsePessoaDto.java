@@ -21,7 +21,7 @@ public class ResponsePessoaDto {
     String inscricaoEstadual;
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
-    Date dataNascimento;
+    LocalDate dataNascimento;
 
     List<ResponseEnderecoDto> enderecoList;
     String cpf;

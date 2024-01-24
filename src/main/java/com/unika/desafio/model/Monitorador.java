@@ -3,7 +3,7 @@ package com.unika.desafio.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -24,7 +24,7 @@ public abstract class Monitorador {
     private String email;
 
     @Column(name = "DATA_NASCIMENTO", nullable = false)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(name = "ATIVO", nullable = false)
     private Boolean ativo;
@@ -57,11 +57,11 @@ public abstract class Monitorador {
         this.email = email;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

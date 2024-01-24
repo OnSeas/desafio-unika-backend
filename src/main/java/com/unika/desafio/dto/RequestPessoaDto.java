@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class RequestPessoaDto {
     @NotNull(message = "A data de nascimento não pode ser vazia.")
     @Past
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
-    Date dataNascimento;
+    LocalDate dataNascimento;
 
     @CPF(message = "O CPF informado é inválido!")
     String cpf;

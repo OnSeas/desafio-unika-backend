@@ -8,6 +8,7 @@ import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
+import com.unika.desafio.service.ReportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,19 @@ public class MonitoradorController {
     @Autowired
     private EnderecoService enderecoService;
 
+    @Autowired
+    private ReportService reportService;
+
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
-                responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
-            });
+            if (responseDto.getEnderecoList() != null){ //TODO Na realidade pode tirar isso pq essa validação vai ser feita no @Valid assim que organizar no front
+                requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
+                    responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
+                });
+            }
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -171,6 +177,21 @@ public class MonitoradorController {
     }
 
 
+    @GetMapping("report/{format}")
+    public ResponseEntity<?> gerarReport(@PathVariable String format){
+        try {
+            String res = reportService.exportReport(format);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
+
     // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -184,7 +205,4 @@ public class MonitoradorController {
         });
         return errors;
     }
-
-
-
 }
