@@ -40,11 +40,9 @@ public class MonitoradorController {
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            if (responseDto.getEnderecoList() != null){ //TODO Na realidade pode tirar isso pq essa validação vai ser feita no @Valid assim que organizar no front
-                requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
-                    responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
-                });
-            }
+            requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
+                responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
+            });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -175,7 +173,6 @@ public class MonitoradorController {
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
-
 
     @GetMapping("report/{format}")
     public ResponseEntity<?> gerarReport(@PathVariable String format){

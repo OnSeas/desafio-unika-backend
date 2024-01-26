@@ -49,8 +49,8 @@ public class RequestPessoaDto {
     @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
 
-//    @NotNull(message = "Lista de endereços precisa ser enviada!")
-//    @NotEmpty(message = "É necessário enviar pelo menos um endereço!")
+    @NotNull(message = "Lista de endereços precisa ser enviada!")
+    @NotEmpty(message = "É necessário enviar pelo menos um endereço!")
     List<RequestEnderecoDto> enderecoList;
 
    // Para validações de repetição no Banco de dados
