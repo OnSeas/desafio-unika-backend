@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioPF" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a773497f-6520-4380-a220-1a2548267e0b">
-<!--    <queryString>-->
-<!--        <![CDATA[SELECT-->
-<!--	estagio_monitorador.data_nascimento,-->
-<!--	estagio_monitorador.email,-->
-<!--	estagio_monitorador.ativo,-->
-<!--	pessoa_fisica.cpf,-->
-<!--	pessoa_fisica.nome,-->
-<!--	pessoa_fisica.rg-->
-<!--FROM-->
-<!--	estagio_monitorador-->
-<!--JOIN-->
-<!--	pessoa_fisica-->
-<!--ON-->
-<!--	estagio_monitorador.id_monitorador = pessoa_fisica.id_monitorador]]>-->
-<!--    </queryString>-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioPF" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a773497f-6520-4380-a220-1a2548267e0b">
     <field name="dataNascimento" class="java.time.LocalDate"></field>
     <field name="email" class="java.lang.String"></field>
     <field name="ativo" class="java.lang.Boolean"></field>
-<!--    <field name="cpf" class="java.lang.String"></field>-->
-<!--    <field name="nome" class="java.lang.String"></field>-->
-<!--    <field name="rg" class="java.lang.String"></field>-->
+    <field name="cpf" class="java.lang.String"></field>
+    <field name="nome" class="java.lang.String"></field>
+    <field name="rg" class="java.lang.String"></field>
     <background>
         <band/>
     </background>
@@ -41,7 +26,8 @@
                     <textElement textAlignment="Right">
                         <font size="14" isBold="false"/>
                     </textElement>
-                    <text><![CDATA[Relatório Pessoa Física]]></text>
+                    <text><![CDATA[Relatório Pessoa Física
+]]></text>
                 </staticText>
             </frame>
         </band>
@@ -76,24 +62,24 @@
                     </reportElement>
                     <textFieldExpression><![CDATA[$F{ativo}]]></textFieldExpression>
                 </textField>
-<!--                <textField>-->
-<!--                    <reportElement x="0" y="138" width="270" height="45" uuid="98acf07d-15c2-48c2-b52a-06ff29ca07a9">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5b1e91b-5a1d-41eb-89a9-66a98d8c96de"/>-->
-<!--                    </reportElement>-->
-<!--                    <textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>-->
-<!--                </textField>-->
-<!--                <textField>-->
-<!--                    <reportElement x="0" y="183" width="270" height="45" uuid="97522447-cded-437f-a6fb-af8fd4b59df6">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83c4549d-43a9-4429-ae7e-37a4c95a31c6"/>-->
-<!--                    </reportElement>-->
-<!--                    <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>-->
-<!--                </textField>-->
-<!--                <textField>-->
-<!--                    <reportElement x="0" y="228" width="270" height="45" uuid="790f0442-bb1c-4c66-b1cf-2566422b1cc4">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2b6ba626-8a77-431e-9f59-d641b907f674"/>-->
-<!--                    </reportElement>-->
-<!--                    <textFieldExpression><![CDATA[$F{rg}]]></textFieldExpression>-->
-<!--                </textField>-->
+                <textField>
+                    <reportElement x="0" y="138" width="270" height="45" uuid="98acf07d-15c2-48c2-b52a-06ff29ca07a9">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5b1e91b-5a1d-41eb-89a9-66a98d8c96de"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="0" y="183" width="270" height="45" uuid="97522447-cded-437f-a6fb-af8fd4b59df6">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83c4549d-43a9-4429-ae7e-37a4c95a31c6"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="0" y="228" width="270" height="45" uuid="790f0442-bb1c-4c66-b1cf-2566422b1cc4">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2b6ba626-8a77-431e-9f59-d641b907f674"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{rg}]]></textFieldExpression>
+                </textField>
             </frame>
             <frame>
                 <reportElement x="10" y="20" width="270" height="273" uuid="415a2a66-6b54-4c5a-9fe8-327a3d9f4dd4">
@@ -117,24 +103,24 @@
                     </reportElement>
                     <text><![CDATA[ativo]]></text>
                 </staticText>
-<!--                <staticText>-->
-<!--                    <reportElement x="0" y="138" width="270" height="45" uuid="13564fcc-ee5c-46e5-8f5a-b3fc6bcbcccd">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2b6ba626-8a77-431e-9f59-d641b907f674"/>-->
-<!--                    </reportElement>-->
-<!--                    <text><![CDATA[cpf]]></text>-->
-<!--                </staticText>-->
-<!--                <staticText>-->
-<!--                    <reportElement x="0" y="183" width="270" height="45" uuid="822b2a2e-83bb-4698-a0f8-740878414224">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="428e65cf-7df3-4133-b717-072d6ab57fd0"/>-->
-<!--                    </reportElement>-->
-<!--                    <text><![CDATA[nome]]></text>-->
-<!--                </staticText>-->
-<!--                <staticText>-->
-<!--                    <reportElement x="0" y="228" width="270" height="45" uuid="6dfc2ab1-b7f7-47f1-8179-4e274099bb7b">-->
-<!--                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5b1e91b-5a1d-41eb-89a9-66a98d8c96de"/>-->
-<!--                    </reportElement>-->
-<!--                    <text><![CDATA[rg]]></text>-->
-<!--                </staticText>-->
+                <staticText>
+                    <reportElement x="0" y="138" width="270" height="45" uuid="13564fcc-ee5c-46e5-8f5a-b3fc6bcbcccd">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2b6ba626-8a77-431e-9f59-d641b907f674"/>
+                    </reportElement>
+                    <text><![CDATA[cpf]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="183" width="270" height="45" uuid="822b2a2e-83bb-4698-a0f8-740878414224">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="428e65cf-7df3-4133-b717-072d6ab57fd0"/>
+                    </reportElement>
+                    <text><![CDATA[nome]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="228" width="270" height="45" uuid="6dfc2ab1-b7f7-47f1-8179-4e274099bb7b">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d5b1e91b-5a1d-41eb-89a9-66a98d8c96de"/>
+                    </reportElement>
+                    <text><![CDATA[rg]]></text>
+                </staticText>
             </frame>
         </band>
     </detail>

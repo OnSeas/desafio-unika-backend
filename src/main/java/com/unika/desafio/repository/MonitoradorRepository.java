@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> {
@@ -50,4 +51,10 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
     List<Monitorador> findByCnpjContaining(String cnpj);
 
     List<Monitorador> findByTipoPessoa(TipoPessoa tipoPessoa);
+
+    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.tipoPessoa = 0")
+    List<PessoaFisica> findByAllPF();
+
+    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.id = :id")
+    Optional<PessoaFisica> findByIdPF(Long id);
 }

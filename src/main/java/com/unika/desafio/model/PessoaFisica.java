@@ -30,14 +30,13 @@ public class PessoaFisica extends Monitorador{
         this.nome = nome;
     }
 
-    public String getRG() {
-        return aplicarMascaraRg(rg);
+    public String getRg() {
+        return rg;
     }
 
-    public void setRG(String rg) {
-        this.rg = removerFormatacaoRg(rg);
+    public void setRg(String rg) {
+        this.rg = rg;
     }
-
 
     // Máscaras de CPF
     private String removerFormatacaoCpf(String cpf) {

@@ -9,6 +9,7 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import com.unika.desafio.service.ReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -174,10 +175,10 @@ public class MonitoradorController {
         }
     }
 
-    @GetMapping("report/{format}")
-    public ResponseEntity<?> gerarReport(@PathVariable String format){
+    @GetMapping("report/{format}/{id}")
+    public ResponseEntity<?> gerarReport(@PathVariable String format, @PathVariable Long id){
         try {
-            String res = reportService.exportReport(format);
+            String res = reportService.exportReport(format, id);
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -185,8 +186,6 @@ public class MonitoradorController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
-
-
 
 
     // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
