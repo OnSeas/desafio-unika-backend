@@ -9,7 +9,6 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import com.unika.desafio.service.ReportService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,13 +36,15 @@ public class MonitoradorController {
     private ReportService reportService;
 
     @PostMapping("/cadastrar")
+    @Transactional
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
-                responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
-            });
+            if (requestDto.getEnderecoList() != null && !requestDto.getEnderecoList().isEmpty())
+                requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
+                    responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
+                });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());

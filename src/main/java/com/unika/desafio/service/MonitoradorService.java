@@ -31,6 +31,8 @@ public class MonitoradorService {
     private List<IMonitoradorJaExiste> monitoradorJaExiste;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
+        if (requestDto.getEnderecoList() == null || requestDto.getEnderecoList().isEmpty())
+            throw new BusinessException(ErrorCode.ENDERECO_NECESSARIO);
         monitoradorJaExiste.forEach(v -> v.validar(requestDto)); // Validando se já existe
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();

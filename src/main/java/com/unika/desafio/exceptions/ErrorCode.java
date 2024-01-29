@@ -23,7 +23,8 @@ public enum ErrorCode {
     NENHUM_MONITORADOR_POR_EMAIL(HttpStatus.NOT_FOUND,"Não há pessoas com este email!"),
     PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoas com este CPF!"),
     PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoas com este CNPJ!"),
-    CEP_INVALIDO(HttpStatus.NOT_FOUND,"Este CEP não foi encontrado, tem certeza que informou o CEP correto?");
+    CEP_INVALIDO(HttpStatus.NOT_FOUND,"Este CEP não foi encontrado, tem certeza que informou o CEP correto?"),
+    ENDERECO_NECESSARIO(HttpStatus.BAD_REQUEST,"É necessário cadastrar pelo menos um endereço.");
 
     HttpStatus status;
     String message;
