@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class EnderecoService {
-
     @Autowired
     private EnderecoRepository repository;
 
@@ -99,8 +98,15 @@ public class EnderecoService {
     }
 
     public void deletarEndereco(Long idEndereco){
-        enderecoExite(idEndereco);
-        repository.deleteById(idEndereco);
+        Optional<Endereco> optionalEndereco = repository.findById(idEndereco);
+        if (optionalEndereco.isPresent()){
+            Endereco endereco = optionalEndereco.get();
+            if (repository.countByMonitoradorId(endereco.getMonitorador().getId()) == 1){
+                throw new BusinessException(ErrorCode.UNICO_ENDERECO);
+            }
+            repository.deleteById(idEndereco);
+        } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
+
     }
 
     public void tornarEnderecoPrincipal(Long idMonitor, Long idEndereco){
