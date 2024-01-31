@@ -41,7 +41,7 @@ public class MonitoradorController {
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            if (requestDto.getEnderecoList() != null && !requestDto.getEnderecoList().isEmpty())
+            if (requestDto.getEnderecoList() != null)
                 requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
                     responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
                 });

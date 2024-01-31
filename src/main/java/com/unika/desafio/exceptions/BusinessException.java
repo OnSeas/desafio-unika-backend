@@ -3,7 +3,7 @@ package com.unika.desafio.exceptions;
 import org.springframework.http.HttpStatus;
 
 public class BusinessException extends RuntimeException{
-    private ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
     public BusinessException(ErrorCode errorCode){
         super();
