@@ -10,14 +10,31 @@ import com.unika.desafio.model.PessoaJuridica;
 import com.unika.desafio.model.TipoPessoa;
 import com.unika.desafio.repository.MonitoradorRepository;
 import com.unika.desafio.validations.monitorador.IMonitoradorJaExiste;
-import com.unika.desafio.validations.monitorador.MonitoradorValido;
+import jakarta.validation.Valid;
+import lombok.Cleanup;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +48,6 @@ public class MonitoradorService {
     private List<IMonitoradorJaExiste> monitoradorJaExiste;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
-        if (requestDto.getEnderecoList() == null || requestDto.getEnderecoList().isEmpty())
-            throw new BusinessException(ErrorCode.ENDERECO_NECESSARIO);
         monitoradorJaExiste.forEach(v -> v.validar(requestDto)); // Validando se já existe
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
@@ -167,6 +182,53 @@ public class MonitoradorService {
                 stream()
                 .map(m -> mapper.map(m, ResponsePessoaDto.class))
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public String importarMonitoradores(File file) throws IOException {
+        System.out.println(file);
+
+        @Cleanup
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        List<Row> rows = (List<Row>) xlsxToList(sheet.iterator());
+        rows.remove(0); // Remove o cabeçalho. O cabeçalho pode ser usado se quisermos.
+
+        rows.forEach(row ->{
+            List<Cell> cells = (List<Cell>) xlsxToList(row.cellIterator());
+            RequestPessoaDto requestPessoaDto = new RequestPessoaDto();
+            requestPessoaDto.setTipoPessoa((int) cells.get(0).getNumericCellValue());
+            requestPessoaDto.setEmail(cells.get(1).getStringCellValue());
+            requestPessoaDto.setDataNascimento((cells.get(2).getDateCellValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); //conversão de data para localDate
+            if (requestPessoaDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
+                requestPessoaDto.setCpf(cells.get(3).getStringCellValue());
+                requestPessoaDto.setRg(cells.get(4).getStringCellValue());
+                requestPessoaDto.setNome(cells.get(5).getStringCellValue());
+            }else {
+                requestPessoaDto.setCnpj(cells.get(3).getStringCellValue());
+                requestPessoaDto.setRazaoSocial(cells.get(4).getStringCellValue());
+                requestPessoaDto.setInscricaoEstadual(cells.get(5).getStringCellValue());
+            }
+
+            try {
+                cadastrarMonitorador(requestPessoaDto); // TODO validar! Não usa o @Valid.
+            } catch (Exception e){
+                throw new BusinessException(
+                        "Seu arquivo possuí um erro na linha " + (rows.indexOf(row)+1) + ". Erro: " + e.getMessage(),
+                        HttpStatus.BAD_REQUEST);
+            }
+
+        });
+
+        return "Os monitoradores foram importados!";
+    }
+
+    private List<?> xlsxToList(Iterator<?> iterator){
+        return IteratorUtils.toList(iterator);
     }
 
     // MÉTODOS ENCAPSULADOS

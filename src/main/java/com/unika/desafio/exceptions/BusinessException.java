@@ -3,19 +3,27 @@ package com.unika.desafio.exceptions;
 import org.springframework.http.HttpStatus;
 
 public class BusinessException extends RuntimeException{
-    private final ErrorCode errorCode;
+
+    private String message;
+    private HttpStatus status;
 
     public BusinessException(ErrorCode errorCode){
         super();
-        this.errorCode = errorCode;
+        this.message = errorCode.message;
+        this.status = errorCode.status;
+    }
+
+    public BusinessException(String message, HttpStatus status){
+        this.message = message;
+        this.status = status;
     }
 
     @Override
     public String getMessage() {
-        return this.errorCode.message;
+        return this.message;
     }
 
     public HttpStatus getStatus(){
-        return this.errorCode.status;
+        return this.status;
     }
 }

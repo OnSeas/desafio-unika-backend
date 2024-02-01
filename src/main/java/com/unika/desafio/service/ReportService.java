@@ -6,10 +6,12 @@ import com.unika.desafio.model.*;
 import com.unika.desafio.repository.MonitoradorRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRSaver;
-import net.sf.jasperreports.export.*;
+import net.sf.jasperreports.export.ExporterInputItem;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleExporterInputItem;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -18,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -69,32 +70,45 @@ public class ReportService {
         // Preenchendo formulários
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, reportDataSource);
 
+        List<ExporterInputItem> simpleExporterInputs = new ArrayList<>();
+        simpleExporterInputs.add(new SimpleExporterInputItem(jasperPrint));
+        simpleExporterInputs.add(new SimpleExporterInputItem(jasperSubprintPrint));
 
-        if (Objects.equals(tipo, "pdf")){
-            // Exportando o relatório com o subrelatório? Acho que não, parece que exporta um depois o outro.
-            List<ExporterInputItem> simpleExporterInputs = new ArrayList<>();
-            simpleExporterInputs.add(new SimpleExporterInputItem(jasperPrint));
-            simpleExporterInputs.add(new SimpleExporterInputItem(jasperSubprintPrint));
+        JRPdfExporter exporter = new JRPdfExporter();
+        exporter.setExporterInput(new SimpleExporterInput(simpleExporterInputs));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("relatorioMonitorador.pdf"));
 
-            JRPdfExporter exporter = new JRPdfExporter();
-            exporter.setExporterInput(new SimpleExporterInput(simpleExporterInputs));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("relatorioMonitorador.pdf"));
+        exporter.exportReport();
+        File file = ResourceUtils.getFile("relatorioMonitorador.pdf");
 
-            exporter.exportReport();
-            return "Relatório em PDF gerado!";
-        }
-        else if (Objects.equals(tipo, "xls")){ // não é bem o que eu queria TODO decidir se vai usar mesmo essa parte ou só gerar o PDF
-            List<ExporterInputItem> simpleExporterInputs = new ArrayList<>();
-            simpleExporterInputs.add(new SimpleExporterInputItem(jasperPrint));
-            simpleExporterInputs.add(new SimpleExporterInputItem(jasperSubprintPrint));
+        return file.getAbsolutePath();
 
-            JRCsvExporter exporter = new JRCsvExporter();
-            exporter.setExporterInput(new SimpleExporterInput(simpleExporterInputs));
-            exporter.setExporterOutput(new SimpleWriterExporterOutput("dadosMonitorador.csv"));
 
-            exporter.exportReport();
-            return "Dados em XLS gerados!";
-        }
-        else throw new RuntimeException("Tipo não encontrado");
+//        if (Objects.equals(tipo, "pdf")){
+//            // Exportando o relatório com o subrelatório? Acho que não, parece que exporta um depois o outro.
+//            List<ExporterInputItem> simpleExporterInputs = new ArrayList<>();
+//            simpleExporterInputs.add(new SimpleExporterInputItem(jasperPrint));
+//            simpleExporterInputs.add(new SimpleExporterInputItem(jasperSubprintPrint));
+//
+//            JRPdfExporter exporter = new JRPdfExporter();
+//            exporter.setExporterInput(new SimpleExporterInput(simpleExporterInputs));
+//            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("relatorioMonitorador.pdf"));
+//
+//            exporter.exportReport();
+//            return "Relatório em PDF gerado!";
+//        }
+//        else if (Objects.equals(tipo, "xls")){ // não é bem o que eu queria TODO decidir se vai usar mesmo essa parte ou só gerar o PDF
+//            List<ExporterInputItem> simpleExporterInputs = new ArrayList<>();
+//            simpleExporterInputs.add(new SimpleExporterInputItem(jasperPrint));
+//            simpleExporterInputs.add(new SimpleExporterInputItem(jasperSubprintPrint));
+//
+//            JRCsvExporter exporter = new JRCsvExporter();
+//            exporter.setExporterInput(new SimpleExporterInput(simpleExporterInputs));
+//            exporter.setExporterOutput(new SimpleWriterExporterOutput("dadosMonitorador.csv"));
+//
+//            exporter.exportReport();
+//            return "Dados em XLS gerados!";
+//        }
+//        else throw new RuntimeException("Tipo não encontrado");
     }
 }

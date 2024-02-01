@@ -18,6 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -184,6 +185,22 @@ public class MonitoradorController {
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("import")
+    public ResponseEntity<?> importarMonitoradores(@RequestBody File file){
+        try {
+            String res = monitoradorService.importarMonitoradores(file);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (BusinessException e){
+            System.out.println("Entrou no BUSINESS EXCEPTION!");
+            System.out.println("message: " + e.getMessage());
+            System.out.println("status:" + e.getStatus());
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        } catch (Exception e){
+            System.out.println("Entrou no EXCEPTION!");
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

@@ -45,7 +45,6 @@ public class RequestPessoaDto {
     @Size(min = 3, max = 200, message = "A razão social deve ter entre 3 e 200 caracteres!")
     String razaoSocial;
 
-   // TODO descobrir se tem que adcionar validações específicas
     @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
 
@@ -62,6 +61,10 @@ public class RequestPessoaDto {
 
     public String getRGSemFormatacao(){
         return this.rg.replaceAll("[.]", "").replaceAll("[-]", "");
+    }
+
+    public void setTipoPessoa(Integer value){
+       this.tipoPessoa = TipoPessoa.getTipo(value);
     }
 
     @Override
