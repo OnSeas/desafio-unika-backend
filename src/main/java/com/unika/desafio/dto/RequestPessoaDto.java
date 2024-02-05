@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -63,7 +62,7 @@ public class RequestPessoaDto {
         return this.rg.replaceAll("[.]", "").replaceAll("[-]", "");
     }
 
-    public void setTipoPessoa(Integer value){
+    public void setTipoPessoaInt(Integer value){
        this.tipoPessoa = TipoPessoa.getTipo(value);
     }
 
