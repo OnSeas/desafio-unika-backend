@@ -180,8 +180,8 @@ public class MonitoradorController {
     @GetMapping("report/{tipo}/{id}")
     public ResponseEntity<?> gerarReport(@PathVariable String tipo, @PathVariable Long id){
         try {
-            String res = reportService.exportarReport(tipo, id);
-            return new ResponseEntity<>(res, HttpStatus.OK);
+            File reportFile = reportService.exportarReport(tipo, id);
+            return new ResponseEntity<>(reportFile, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
