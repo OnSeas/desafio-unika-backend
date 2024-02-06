@@ -2,9 +2,7 @@ package com.unika.desafio.service;
 
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
-import com.unika.desafio.model.Endereco;
-import com.unika.desafio.model.Monitorador;
-import com.unika.desafio.model.TipoPessoa;
+import com.unika.desafio.model.*;
 import com.unika.desafio.repository.MonitoradorRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -30,36 +28,22 @@ public class ReportService {
     @Autowired
     private MonitoradorRepository monitoradorRepository;
 
-    // O subreport só fica vazio TODO descobrir como preencher o subreport
-    public File exportarReport(String tipo, Long id) throws IOException, JRException { // A ordem das coisas manda em tudo aqui
-        File fileReport;
-        List<Endereco> enderecoList;
-
+    public File exportarReport(String tipo, Long id) throws IOException, JRException {
+        HashMap<String, Object> parameters;
         List<Monitorador> monitoradorList = new ArrayList<>();
-        Optional<Monitorador> monitoradorOptional = monitoradorRepository.findById(id);
 
+        Optional<Monitorador> monitoradorOptional = monitoradorRepository.findById(id);
         if (monitoradorOptional.isEmpty())
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
         else{
             Monitorador monitorador = monitoradorOptional.get();
             monitoradorList.add(monitorador);
-            if (monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-                fileReport = ResourceUtils.getFile("classpath:pfReport.jrxml");
-            }else {
-                fileReport = ResourceUtils.getFile("classpath:pjReport.jrxml");
-            }
-            enderecoList = monitorador.getEnderecoList();
+            parameters = getParameters(monitorador);
         }
 
+        File fileReport = ResourceUtils.getFile("classpath:monitoradorReport.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(fileReport.getAbsolutePath());
         JRBeanCollectionDataSource reportDataSource = new JRBeanCollectionDataSource(monitoradorList);
-
-        HashMap<String, Object> parameters = new HashMap<>();
-
-        System.out.println(enderecoList);
-        JRBeanCollectionDataSource enderecoDataSource = new JRBeanCollectionDataSource(enderecoList);
-        parameters.put("EnderecoList", enderecoDataSource);
-        
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, reportDataSource);
 
         if (tipo.equals("pdf")){
@@ -75,5 +59,31 @@ public class ReportService {
         } else throw new BusinessException("Tipo de documento inválido", HttpStatus.BAD_REQUEST);
 
         return new File("relatorioMonitorador." + tipo);
+    }
+
+    private HashMap<String, Object> getParameters(Monitorador monitorador){ // Setar os parametros que mudama se é pessoa física ou pessoa jurídica
+        HashMap<String, Object> parameters = new HashMap<>();
+
+        if (monitorador.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
+            PessoaFisica pessoaFisica = (PessoaFisica) monitorador;
+
+            parameters.put("tipoPessoa", 0);
+            parameters.put("nome-razao", pessoaFisica.getNome());
+            parameters.put("rg-inscricaoEstadual", pessoaFisica.getRg());
+            parameters.put("CPF-CNPJ", pessoaFisica.getCpf());
+        } else{
+            PessoaJuridica pessoaJuridica = (PessoaJuridica) monitorador;
+
+            parameters.put("tipoPessoa", 1);
+            parameters.put("nome-razao", pessoaJuridica.getRazaoSocial());
+            parameters.put("rg-inscricaoEstadual", pessoaJuridica.getInscricaoEstadual());
+            parameters.put("CPF-CNPJ", pessoaJuridica.getCnpj());
+        }
+
+        List<Endereco> enderecoList = monitorador.getEnderecoList();
+        JRBeanCollectionDataSource enderecoDataSource = new JRBeanCollectionDataSource(enderecoList);
+        parameters.put("EnderecoList", enderecoDataSource);
+
+        return parameters;
     }
 }

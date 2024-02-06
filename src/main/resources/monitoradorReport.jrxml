@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.0.final using JasperReports Library version 6.21.0-4f56c4f36cd19e17675219a9ac4692d5f0f13b06  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pfReport" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8702f8d4-196c-46f8-82c4-cd80a364955f">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mysql data adapter"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NO_DATA_ADAPTER"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -38,15 +38,23 @@
 		<field name="estado" class="com.unika.desafio.model.UF"/>
 		<field name="telefone" class="java.lang.String"/>
 	</subDataset>
-
 	<parameter name="EnderecoList" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource" isForPrompting="false"/>
-
-	<field name="dataNascimento" class="java.time.LocalDate"></field>
-	<field name="email" class="java.lang.String"></field>
-	<field name="ativo" class="java.lang.Boolean"></field>
-	<field name="cpf" class="java.lang.String"></field>
-	<field name="rg" class="java.lang.String"></field>
-	<field name="nome" class="java.lang.String"></field>
+	<parameter name="CPF-CNPJ" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nome-razao" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="rg-inscricaoEstadual" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="tipoPessoa" class="java.lang.Integer" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="dataNascimento" class="java.time.LocalDate"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="ativo" class="java.lang.Boolean"/>
+	<variable name="statusMonitorador" class="java.lang.Boolean">
+		<variableExpression><![CDATA[$F{ativo} ? true : false]]></variableExpression>
+	</variable>
+	<variable name="NumEnderecos" class="java.lang.Integer">
+		<variableExpression><![CDATA[$P{EnderecoList}.getRecordCount()]]></variableExpression>
+	</variable>
 	<background>
 		<band/>
 	</background>
@@ -62,11 +70,11 @@
 					<text><![CDATA[Relatório]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="067d4b3a-31dc-48d4-a88c-28cbf7794868"/>
-					<textElement textAlignment="Right">
-						<font size="14" isBold="false"/>
+					<reportElement x="390" y="29" width="160" height="24" forecolor="#FFFFFF" uuid="d6f086e7-6b9b-46a3-8c47-4d8019487296"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="14"/>
 					</textElement>
-					<text><![CDATA[Pessoas Físicas]]></text>
+					<text><![CDATA[Relatório Monitorador]]></text>
 				</staticText>
 			</frame>
 		</band>
@@ -75,64 +83,117 @@
 		<band height="13"/>
 	</pageHeader>
 	<detail>
-		<band height="181">
+		<band height="225">
 			<textField>
-				<reportElement x="60" y="30" width="280" height="30" uuid="431a5840-e272-4106-86e3-bb41f7ccfa43"/>
+				<reportElement x="60" y="40" width="280" height="30" uuid="431a5840-e272-4106-86e3-bb41f7ccfa43">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement>
 					<font size="15"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{nome-razao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="40" width="140" height="30" uuid="3be5c761-fdc6-46b5-9c4b-99c191b9d0b5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoPessoa} == 0 ? "Pessoa Física" : "Pessoa Jurídica"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="60" y="15" width="100" height="15" uuid="1bfe23b0-f1b3-4677-bff4-f0e03aea5781">
+				<reportElement x="380" y="20" width="110" height="20" uuid="acc28316-c9ce-490e-b483-cd1741a96cf6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<text><![CDATA[nome]]></text>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Tipo pessoa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="150" width="100" height="20" uuid="f8a40614-b5e1-4bb3-b276-ae81fb4d8a71">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="380" y="30" width="140" height="30" uuid="3be5c761-fdc6-46b5-9c4b-99c191b9d0b5"/>
-				<textFieldExpression><![CDATA[$F{dataNascimento}]]></textFieldExpression>
+				<reportElement x="60" y="110" width="170" height="30" uuid="9ffb53b5-da73-4754-8e7e-a18a4406f457"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CPF-CNPJ}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="380" y="15" width="100" height="15" uuid="acc28316-c9ce-490e-b483-cd1741a96cf6">
+			<textField>
+				<reportElement x="60" y="170" width="160" height="30" uuid="61293f2b-5578-4b08-8fe3-9675ad7097d5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rg-inscricaoEstadual}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement key="" isPrintRepeatedValues="false" x="380" y="170" width="100" height="30" uuid="4e90fbe9-4575-4568-92c7-481fd4276d90">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{statusMonitorador} ? "Ativo" : "Inativo"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="20" width="100" height="20" uuid="9492ebdb-827e-42f4-a3f3-122464d9b63c">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoPessoa} == 0 ? "Nome" : "Razão Social"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="90" width="100" height="20" uuid="3936812a-f08e-46ea-ba0a-de5d61fe81cc">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoPessoa} == 0 ? "CPF" : "CNPJ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="150" width="100" height="20" uuid="5806b9ff-3637-43a4-8b7c-d3ce60c91973">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipoPessoa} == 0 ? "RG" : "Inscrição Estadual"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="90" width="110" height="20" uuid="e92e42ac-f415-44d4-8908-352a2255b98d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<text><![CDATA[Data de Nascimento]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="444" y="145" width="100" height="30" uuid="89df3c99-9bfe-4e3d-a7ac-3f58654d16b8"/>
-				<textFieldExpression><![CDATA[$F{ativo}]]></textFieldExpression>
+				<reportElement x="380" y="110" width="170" height="30" uuid="a941fdc3-95b2-4b95-99d2-dfae05b23138"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{dataNascimento}).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="444" y="130" width="100" height="15" uuid="f8a40614-b5e1-4bb3-b276-ae81fb4d8a71">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<text><![CDATA[ativo]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="60" y="90" width="170" height="30" uuid="9ffb53b5-da73-4754-8e7e-a18a4406f457"/>
-				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="60" y="75" width="100" height="15" uuid="edc26afc-e541-42e3-bf98-6a1de5f3ab42">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<text><![CDATA[CPF]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="60" y="145" width="170" height="30" uuid="61293f2b-5578-4b08-8fe3-9675ad7097d5"/>
-				<textFieldExpression><![CDATA[$F{rg}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="60" y="130" width="100" height="15" uuid="c8c78742-5656-4559-9a40-da5ddc95fb68">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<text><![CDATA[RG]]></text>
-			</staticText>
 		</band>
 		<band height="130">
 			<componentElement>
-				<reportElement x="77" y="60" width="400" height="60" uuid="b6e11b7e-c434-40b7-92d2-e35252b89fd2">
+				<reportElement x="32" y="50" width="490" height="60" uuid="b6e11b7e-c434-40b7-92d2-e35252b89fd2">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -142,103 +203,103 @@
 					<datasetRun subDataset="EnderecoDataSet" uuid="fe6d38cb-2ea9-4749-866f-931e22e6da97">
 						<dataSourceExpression><![CDATA[$P{EnderecoList}]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="90" uuid="203f3bc2-9d1d-4c32-b4d6-90f7e4ac12f2">
+					<jr:column width="120" uuid="203f3bc2-9d1d-4c32-b4d6-90f7e4ac12f2">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="90" height="30" uuid="5a0224ac-242f-41de-a78f-f26437e2e356"/>
+								<reportElement x="0" y="0" width="120" height="30" uuid="5a0224ac-242f-41de-a78f-f26437e2e356"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[endereco]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="30" uuid="962961a5-6684-4ece-9440-3f2de2115959"/>
+								<reportElement x="0" y="0" width="120" height="30" uuid="962961a5-6684-4ece-9440-3f2de2115959"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{endereco}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="f6a8180f-2103-4231-92ce-36a829d76c11">
+					<jr:column width="80" uuid="f6a8180f-2103-4231-92ce-36a829d76c11">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="60" height="30" uuid="8313d4b8-b5ae-4ac5-8c18-ce39f854c139"/>
+								<reportElement x="0" y="0" width="80" height="30" uuid="8313d4b8-b5ae-4ac5-8c18-ce39f854c139"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[cep]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="30" uuid="d3f0dd32-e77e-4d47-bb97-34c8b71d9eeb"/>
+								<reportElement x="0" y="0" width="80" height="30" uuid="d3f0dd32-e77e-4d47-bb97-34c8b71d9eeb"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="22d8e52e-8b59-4d29-b215-ab43cffebaba">
+					<jr:column width="80" uuid="22d8e52e-8b59-4d29-b215-ab43cffebaba">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="30" uuid="843a8c65-5366-4bc2-87c5-aa08aa0ec1b6"/>
+								<reportElement x="0" y="0" width="80" height="30" uuid="843a8c65-5366-4bc2-87c5-aa08aa0ec1b6"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[bairro]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="30" uuid="b1787dce-a0ef-4e6b-b9e9-d32e702e7c4d"/>
+								<reportElement x="0" y="0" width="80" height="30" uuid="b1787dce-a0ef-4e6b-b9e9-d32e702e7c4d"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{bairro}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="c45dfdd8-3836-4445-a7fc-148225b82a38">
+					<jr:column width="70" uuid="c45dfdd8-3836-4445-a7fc-148225b82a38">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="60" height="30" uuid="a100e97b-46b5-4549-b53c-558401fc5be3"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="a100e97b-46b5-4549-b53c-558401fc5be3"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[cidade]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="30" uuid="f763ca8d-e97d-4aea-87d8-aa2f884b06b3"/>
+								<reportElement x="0" y="0" width="70" height="30" uuid="f763ca8d-e97d-4aea-87d8-aa2f884b06b3"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{cidade}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="83388469-92fe-43b1-9e44-f6ae0546465e">
+					<jr:column width="50" uuid="83388469-92fe-43b1-9e44-f6ae0546465e">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="30" uuid="98991afa-d925-4620-a4a3-9821d1c8ad42"/>
+								<reportElement x="0" y="0" width="50" height="30" uuid="98991afa-d925-4620-a4a3-9821d1c8ad42"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[estado]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="dbf2bf75-e06a-4c51-b376-7cf9884c19ad"/>
+								<reportElement x="0" y="0" width="50" height="30" uuid="dbf2bf75-e06a-4c51-b376-7cf9884c19ad"/>
 								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{estado}.getSigla()]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="f88cf55b-6b0e-4cde-971f-990e089da1d9">
+					<jr:column width="90" uuid="f88cf55b-6b0e-4cde-971f-990e089da1d9">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="30" uuid="ace1d9fc-129c-4e94-8064-906da372501e"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="ace1d9fc-129c-4e94-8064-906da372501e"/>
 								<textElement textAlignment="Center"/>
 								<text><![CDATA[telefone]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="30" uuid="bba51538-32f6-47ad-9aea-52b8d2503c91"/>
+								<reportElement x="0" y="0" width="90" height="30" uuid="bba51538-32f6-47ad-9aea-52b8d2503c91"/>
 								<textElement textAlignment="Center"/>
 								<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
 							</textField>
@@ -246,16 +307,13 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="129" width="555" height="1" uuid="7c2b8419-25a5-42d1-9057-edaa9578a052"/>
-			</line>
-			<staticText>
-				<reportElement x="227" y="10" width="100" height="30" uuid="767fb301-1896-4d8c-8f94-a4d7f5af7a94"/>
+			<textField>
+				<reportElement x="177" y="10" width="200" height="30" uuid="b917ef32-f3d4-4ab2-ac70-cea7fb583a10"/>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[Endereços]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$V{NumEnderecos} > 0 ? "Endereços" : ""]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
@@ -276,6 +334,9 @@
 				<reportElement x="0" y="4" width="100" height="13" uuid="c0148735-39dd-4bd2-8e20-b70772628cc9"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="4" width="555" height="1" uuid="7c2b8419-25a5-42d1-9057-edaa9578a052"/>
+			</line>
 		</band>
 	</pageFooter>
 	<summary>

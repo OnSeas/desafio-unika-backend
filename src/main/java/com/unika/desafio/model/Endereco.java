@@ -30,6 +30,7 @@ public class Endereco {
     @Column(name = "CIDADE", nullable = false)
     private String cidade;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "ESTADO", nullable = false)
     private UF estado;
 

@@ -127,6 +127,8 @@ public class MonitoradorController {
         }
     }
 
+
+    // Filtros TODO olhar https://vanderloureiro.medium.com/filtros-avan%C3%A7ados-com-jpa-criteria-58fbe92f5171
     @GetMapping("buscar/email/{email}")
     public ResponseEntity<?> monitoradorPeloEmail(@PathVariable String email){
         try {
