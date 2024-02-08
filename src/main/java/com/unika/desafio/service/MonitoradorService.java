@@ -185,33 +185,34 @@ public class MonitoradorService {
     public String importarMonitoradores(File file) throws IOException {
         System.out.println(file);
 
-        @Cleanup
+        @Cleanup // Fecha o arquivo após ser usado
         FileInputStream fileInputStream = new FileInputStream(file);
 
         Workbook workbook = new XSSFWorkbook(fileInputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
-        List<Row> rows = (List<Row>) xlsxToList(sheet.iterator());
-        rows.remove(0); // Remove o cabeçalho. O cabeçalho pode ser usado se quisermos.
+        List<Row> rows = (List<Row>) toList(sheet.iterator());
+        rows.remove(0);
 
         rows.forEach(row ->{
-            List<Cell> cells = (List<Cell>) xlsxToList(row.cellIterator());
+            List<Cell> cells = (List<Cell>) toList(row.cellIterator());
             RequestPessoaDto requestPessoaDto = new RequestPessoaDto();
-            requestPessoaDto.setTipoPessoaInt((int) cells.get(0).getNumericCellValue());
-            requestPessoaDto.setEmail(cells.get(1).getStringCellValue());
-            requestPessoaDto.setDataNascimento((cells.get(2).getDateCellValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); //conversão de data para localDate
-            if (requestPessoaDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-                requestPessoaDto.setCpf(cells.get(3).getStringCellValue());
-                requestPessoaDto.setRg(cells.get(4).getStringCellValue());
-                requestPessoaDto.setNome(cells.get(5).getStringCellValue());
-            }else {
-                requestPessoaDto.setCnpj(cells.get(6).getStringCellValue());
-                requestPessoaDto.setRazaoSocial(cells.get(7).getStringCellValue());
-                requestPessoaDto.setInscricaoEstadual(cells.get(8).getStringCellValue());
-            }
-
             try {
-                cadastrarMonitorador(requestPessoaDto); // TODO validar! Não usa o @Valid.
+                requestPessoaDto.setTipoPessoaInt((int) cells.get(0).getNumericCellValue());
+                requestPessoaDto.setEmail(cells.get(1).getStringCellValue());
+                requestPessoaDto.setDataNascimento((cells.get(2).getDateCellValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); //conversão de data para localDate
+                if (requestPessoaDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
+                    requestPessoaDto.setCpf(cells.get(3).getStringCellValue());
+                    requestPessoaDto.setRg(cells.get(4).getStringCellValue());
+                    requestPessoaDto.setNome(cells.get(5).getStringCellValue());
+                }else {
+                    requestPessoaDto.setCnpj(cells.get(6).getStringCellValue());
+                    requestPessoaDto.setRazaoSocial(cells.get(7).getStringCellValue());
+                    requestPessoaDto.setInscricaoEstadual(cells.get(8).getStringCellValue());
+                }
+
+                System.out.println(requestPessoaDto);
+                cadastrarMonitorador(requestPessoaDto);
             } catch (Exception e){
                 throw new BusinessException(
                         "Seu arquivo possuí um erro na linha " + (rows.indexOf(row)+1) + ". Erro: " + e.getMessage(),
@@ -223,7 +224,7 @@ public class MonitoradorService {
         return "Os monitoradores foram importados!";
     }
 
-    private List<?> xlsxToList(Iterator<?> iterator){
+    private List<?> toList(Iterator<?> iterator){
         return IteratorUtils.toList(iterator);
     }
 

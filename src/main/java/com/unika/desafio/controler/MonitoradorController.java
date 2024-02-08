@@ -197,12 +197,8 @@ public class MonitoradorController {
             String res = monitoradorService.importarMonitoradores(file);
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
-            System.out.println("Entrou no BUSINESS EXCEPTION!");
-            System.out.println("message: " + e.getMessage());
-            System.out.println("status:" + e.getStatus());
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
-            System.out.println("Entrou no EXCEPTION!");
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
