@@ -161,6 +161,10 @@ public class EnderecoService {
         System.out.println(response);
         System.out.println(response.body());
 
+        if (response.statusCode() == 400){
+            throw new BusinessException(ErrorCode.CEP_INVALIDO);
+        }
+
         if (response.body().contains("\"erro\": true")){
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
         }

@@ -37,15 +37,10 @@ public class MonitoradorController {
     private ReportService reportService;
 
     @PostMapping("/cadastrar")
-    @Transactional
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            if (requestDto.getEnderecoList() != null)
-                requestDto.getEnderecoList().forEach(endereco -> { // ADD os endereços que foram enviados junto com o request
-                    responseDto.getEnderecoList().add((ResponseEnderecoDto) cadastrarEndereco(responseDto.getId(), endereco).getBody());
-                });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -204,7 +199,7 @@ public class MonitoradorController {
     }
 
 
-    // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
+    // Pegar exceção de @Valid e retornar Response
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

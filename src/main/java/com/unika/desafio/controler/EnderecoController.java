@@ -84,7 +84,7 @@ public class EnderecoController {
 
 
 
-    // Pegar exceção de @Valid e retornar Response // TODO extrair para classe
+    // Pegar exceção de @Valid e retornar Response
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

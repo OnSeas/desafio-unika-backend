@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Setter
 @Getter
@@ -35,19 +34,17 @@ public class RequestPessoaDto {
     @Pattern(regexp = "\\d{2}.?\\d{3}.?\\d{3}-?\\d", message = "O RG informado é inválido!")
     String rg;
 
-    @Size(min = 3, max = 200, message = "O nome deve ter entre 3 e 200 caracteres!")
+    @Size(min = 3, max = 50, message = "O nome deve ter entre 3 e 200 caracteres!")
     String nome;
 
     @CNPJ(message = "O CNPJ informado é inválido!")
     String cnpj;
 
-    @Size(min = 3, max = 200, message = "A razão social deve ter entre 3 e 200 caracteres!")
+    @Size(min = 3, max = 50, message = "A razão social deve ter entre 3 e 200 caracteres!")
     String razaoSocial;
 
     @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
-
-    List<RequestEnderecoDto> enderecoList;
 
    // Para validações de repetição no Banco de dados
    public String getCpfSemFormatacao(){
