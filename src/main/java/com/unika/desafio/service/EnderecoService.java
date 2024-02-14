@@ -1,5 +1,6 @@
 package com.unika.desafio.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unika.desafio.dto.RequestEnderecoDto;
 import com.unika.desafio.dto.ResponseEnderecoDto;
 import com.unika.desafio.exceptions.BusinessException;
@@ -11,6 +12,7 @@ import com.unika.desafio.service.apisExternas.ConexaoViaCep;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -125,6 +127,18 @@ public class EnderecoService {
             repository.save(novoEnderecoPrincipal);
 
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
+    }
+
+    public ResponseEnderecoDto getEnderecoByCep(String cep){
+        try {
+            ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseEnderecoDto endereco = objectMapper.readValue(conexaoViaCep.getEnderecoPeloCep(cep).body(), ResponseEnderecoDto.class);
+            System.out.println(endereco);
+            return endereco;
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // VALIDACOES

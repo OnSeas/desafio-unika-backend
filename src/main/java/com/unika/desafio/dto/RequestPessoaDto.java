@@ -25,13 +25,13 @@ public class RequestPessoaDto {
 
     @NotNull(message = "A data de nascimento não pode ser vazia.")
     @Past
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "pt-BR", timezone = "Brazil/East")
     LocalDate dataNascimento;
 
     @CPF(message = "O CPF informado é inválido!")
     String cpf;
 
-    @Pattern(regexp = "\\d{2}.?\\d{3}.?\\d{3}-?\\d", message = "O RG informado é inválido!")
+    @Pattern(regexp = "\\d{2}.\\d{3}.\\d{3}-\\d", message = "O RG informado é inválido!")
     String rg;
 
     @Size(min = 3, max = 50, message = "O nome deve ter entre 3 e 200 caracteres!")

@@ -1,5 +1,8 @@
 package com.unika.desafio.model;
 
+import lombok.Getter;
+
+@Getter
 public enum UF {
     AMAZONAS("AM"),
     ALAGOAS("AL"),
@@ -10,7 +13,7 @@ public enum UF {
     MATO_GROSSO("MT"),
     MINAS_GERAIS("MG"),
     MATO_GROSSO_DO_SUL("MS"),
-    GOIAS("GO"),
+    GO("GO"), // TODO
     MARANHAO("MA"),
     RIO_GRANDE_DO_SUL("RS"),
     TOCANTINS("TO"),
@@ -29,13 +32,9 @@ public enum UF {
     SERGIPE("SE"),
     DISTRITO_FEDERAL("DF");
 
-    private final String sigla;
+    private final String value;
 
-    UF(String sigla){
-        this.sigla = sigla;
-    }
-
-    public String getSigla() {
-        return sigla;
+    UF(String value){
+        this.value = value;
     }
 }

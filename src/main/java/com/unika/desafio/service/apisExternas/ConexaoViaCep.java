@@ -20,9 +20,7 @@ public class ConexaoViaCep {
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         System.out.println(response.statusCode());
-
-
-
+        System.out.println(response.body());
         return response;
     }
 }
