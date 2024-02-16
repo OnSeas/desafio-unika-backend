@@ -43,7 +43,7 @@ public class EnderecoService {
             temOutroEnderecoPrincipal(monitorador.getId());
         }
 
-        validarCepExiste(endereco.getCep()); // TODO melhor dinamica de como isso acontece
+        validarCepExiste(endereco.getCep()); // TODO melhorar dinamica de como isso acontece
 
         repository.save(endereco);
         return mapper.map(endereco, ResponseEnderecoDto.class);
@@ -171,7 +171,7 @@ public class EnderecoService {
     private void validarCepExiste(String cep) {
         try {
             conexaoViaCep.getEnderecoPeloCep(cep);
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
         }
     }

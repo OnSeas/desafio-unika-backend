@@ -183,7 +183,9 @@ public class MonitoradorService {
 
     @Transactional
     public String importarMonitoradores(File file) throws IOException {
-        System.out.println(file);
+        if(!file.getName().endsWith(".xlsx") && !file.getName().endsWith(".xls")){
+            throw new BusinessException(ErrorCode.TIPO_ARQUIVO_INVALIDO);
+        }
 
         @Cleanup // Fecha o arquivo após ser usado
         FileInputStream fileInputStream = new FileInputStream(file);

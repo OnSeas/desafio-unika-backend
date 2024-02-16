@@ -24,6 +24,7 @@ public enum ErrorCode {
     PESSOA_POR_CPF(HttpStatus.NOT_FOUND,"Não há pessoas com este CPF!"),
     PESSOA_POR_CNPJ(HttpStatus.NOT_FOUND,"Não há pessoas com este CNPJ!"),
     CEP_INVALIDO(HttpStatus.NOT_FOUND,"Este CEP não foi encontrado, tem certeza que informou o CEP correto?"),
+    TIPO_ARQUIVO_INVALIDO(HttpStatus.BAD_REQUEST,"O arquivo precisa ser no formato excel xls ou xlsx!"),
     UNICO_ENDERECO(HttpStatus.BAD_REQUEST,"Monitorador não pode ficar sem endereços.");
 
     final HttpStatus status;
