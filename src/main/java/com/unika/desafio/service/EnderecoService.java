@@ -30,7 +30,8 @@ public class EnderecoService {
     @Autowired
     private MonitoradorService monitoradorService;
 
-    private ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper = new ModelMapper();
+    private final ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
 
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
         monitoradorService.monitoradorExiste(monitorador.getId());
@@ -42,7 +43,7 @@ public class EnderecoService {
             temOutroEnderecoPrincipal(monitorador.getId());
         }
 
-        validarCepExiste(endereco.getCep());
+        validarCepExiste(endereco.getCep()); // TODO melhor dinamica de como isso acontece
 
         repository.save(endereco);
         return mapper.map(endereco, ResponseEnderecoDto.class);
@@ -131,7 +132,6 @@ public class EnderecoService {
 
     public ResponseEnderecoDto getEnderecoByCep(String cep){
         try {
-            ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
             ObjectMapper objectMapper = new ObjectMapper();
             ResponseEnderecoDto endereco = objectMapper.readValue(conexaoViaCep.getEnderecoPeloCep(cep).body(), ResponseEnderecoDto.class);
             System.out.println(endereco);
@@ -168,20 +168,11 @@ public class EnderecoService {
         }
     }
 
-    private void validarCepExiste(String cep) throws IOException, InterruptedException {
-        ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
-        HttpResponse<String> response = conexaoViaCep.getEnderecoPeloCep(cep);
-
-        System.out.println(response);
-        System.out.println(response.body());
-
-        if (response.statusCode() == 400){
+    private void validarCepExiste(String cep) {
+        try {
+            conexaoViaCep.getEnderecoPeloCep(cep);
+        } catch (IOException | InterruptedException e) {
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
         }
-
-        if (response.body().contains("\"erro\": true")){
-            throw new BusinessException(ErrorCode.CEP_INVALIDO);
-        }
-
     }
 }

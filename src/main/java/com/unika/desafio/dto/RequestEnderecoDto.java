@@ -29,7 +29,7 @@ public class RequestEnderecoDto {
     String bairro;
 
     @NotBlank(message = "Campo telefone não pode ser vazio")
-    @Pattern(regexp = "\\(\\d{2}\\)\\d{5}-\\d{4}")
+    @Pattern(regexp = "\\(\\d{2}\\)\\d?\\d{4}-\\d{4}")
     String Telefone;
 
     @NotBlank(message = "Campo cidade não pode ser vazio")

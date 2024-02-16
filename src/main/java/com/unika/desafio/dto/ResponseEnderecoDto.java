@@ -2,7 +2,6 @@ package com.unika.desafio.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.model.UF;
 import lombok.Getter;
 import lombok.Setter;

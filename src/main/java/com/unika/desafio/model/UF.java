@@ -1,5 +1,6 @@
 package com.unika.desafio.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -13,7 +14,7 @@ public enum UF {
     MATO_GROSSO("MT"),
     MINAS_GERAIS("MG"),
     MATO_GROSSO_DO_SUL("MS"),
-    GO("GO"), // TODO
+    GOIAS("GO"), // TODO
     MARANHAO("MA"),
     RIO_GRANDE_DO_SUL("RS"),
     TOCANTINS("TO"),
@@ -32,9 +33,10 @@ public enum UF {
     SERGIPE("SE"),
     DISTRITO_FEDERAL("DF");
 
-    private final String value;
+    @JsonValue
+    private final String sigla;
 
-    UF(String value){
-        this.value = value;
+    UF(String sigla){
+        this.sigla = sigla;
     }
 }
