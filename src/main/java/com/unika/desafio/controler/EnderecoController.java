@@ -72,7 +72,7 @@ public class EnderecoController {
         }
     }
 
-    @PutMapping("/{idEndereco}/tornar-principal/{idMonitor}")
+    @PutMapping("/{idMonitor}/tornar-principal/{idEndereco}")
     public ResponseEntity<?> tornarEnderecoPrincipal(@PathVariable Long idEndereco, @PathVariable Long idMonitor){
         try {
             service.tornarEnderecoPrincipal(idMonitor, idEndereco);
@@ -91,7 +91,6 @@ public class EnderecoController {
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
     }
-
 
 
     // Pegar exceção de @Valid e retornar Response

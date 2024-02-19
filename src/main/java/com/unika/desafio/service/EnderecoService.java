@@ -35,6 +35,7 @@ public class EnderecoService {
 
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
         monitoradorService.monitoradorExiste(monitorador.getId());
+        numEnderecos(monitorador);
 
         Endereco endereco = mapper.map(requestDto, Endereco.class);
         endereco.setMonitorador(monitorador);
@@ -103,10 +104,6 @@ public class EnderecoService {
     public void deletarEndereco(Long idEndereco){
         Optional<Endereco> optionalEndereco = repository.findById(idEndereco);
         if (optionalEndereco.isPresent()){
-            Endereco endereco = optionalEndereco.get();
-            if (repository.countByMonitoradorId(endereco.getMonitorador().getId()) == 1){
-                throw new BusinessException(ErrorCode.UNICO_ENDERECO);
-            }
             repository.deleteById(idEndereco);
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
 
@@ -173,6 +170,12 @@ public class EnderecoService {
             conexaoViaCep.getEnderecoPeloCep(cep);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
+        }
+    }
+
+    private void numEnderecos(Monitorador monitorador){
+        if(monitorador.getEnderecoList().size() >= 3){
+            throw new BusinessException(ErrorCode.NUM_MAX_ENDERECOS);
         }
     }
 }
