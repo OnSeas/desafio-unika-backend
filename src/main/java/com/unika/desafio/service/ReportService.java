@@ -6,10 +6,8 @@ import com.unika.desafio.model.*;
 import com.unika.desafio.repository.MonitoradorRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,16 +47,11 @@ public class ReportService {
         if (tipo.equals("pdf")){
             JRPdfExporter exporter = new JRPdfExporter();
             exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("relatorioMonitorador.pdf"));
-            exporter.exportReport();
-        } else if (tipo.equals("html")){
-            HtmlExporter exporter = new HtmlExporter();
-            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-            exporter.setExporterOutput(new SimpleHtmlExporterOutput("relatorioMonitorador.html"));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("relatorioMonitorador-" + parameters.get("nome-razao") + "." + tipo));
             exporter.exportReport();
         } else throw new BusinessException("Tipo de documento inválido", HttpStatus.BAD_REQUEST);
 
-        return new File("relatorioMonitorador." + tipo);
+        return new File("relatorioMonitorador-" + parameters.get("nome-razao") + "." + tipo);
     }
 
     private HashMap<String, Object> getParameters(Monitorador monitorador){ // Setar os parametros que mudama se é pessoa física ou pessoa jurídica
