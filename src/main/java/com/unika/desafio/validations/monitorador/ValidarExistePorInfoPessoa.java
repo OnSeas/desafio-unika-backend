@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 // TODO dividir em mais classes. Ta muito lotado.
 
 @Component
-public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
+public class ValidarExistePorInfoPessoa implements IMonitoradorValid {
 
     @Autowired
     private MonitoradorRepository repository;
@@ -19,9 +19,6 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
     @Override
     public void validar(RequestPessoaDto requestDto) {
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-            if(repository.findByCpf(requestDto.getCpfSemFormatacao()) != null){
-                throw new BusinessException(ErrorCode.CPF_REPETIDO);
-            }
             if (repository.findbyrg(requestDto.getRGSemFormatacao()) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }
@@ -38,9 +35,6 @@ public class ValidarExistePorInfoPessoa implements IMonitoradorJaExiste {
     @Override
     public void validar(RequestPessoaDto requestDto, Long id) {
         if(requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
-            if(repository.findByDifferentCpf(requestDto.getCpfSemFormatacao(), id) != null){
-                throw new BusinessException(ErrorCode.CPF_REPETIDO);
-            }
             if(repository.findByDifferentRg(requestDto.getRGSemFormatacao(), id) != null){
                 throw new BusinessException(ErrorCode.RG_REPETIDO);
             }

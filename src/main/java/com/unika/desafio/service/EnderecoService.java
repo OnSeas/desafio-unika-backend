@@ -9,6 +9,7 @@ import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.repository.EnderecoRepository;
 import com.unika.desafio.service.apisExternas.ConexaoViaCep;
+import com.unika.desafio.validations.endereco.IEnderecoValid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +33,12 @@ public class EnderecoService {
     private final ModelMapper mapper = new ModelMapper();
     private final ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
 
+    @Autowired
+    private List<IEnderecoValid> enderecoValid;
+
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
+        enderecoValid.forEach(v -> v.validar(requestDto)); // Validações do request de endereço
+
         monitoradorService.monitoradorExiste(monitorador.getId());
         numEnderecos(monitorador);
 
@@ -43,8 +48,6 @@ public class EnderecoService {
         if(endereco.getPrincipal()){
             temOutroEnderecoPrincipal(monitorador.getId());
         }
-
-        validarCepExiste(endereco.getCep()); // TODO melhorar dinamica de como isso acontece
 
         repository.save(endereco);
         return mapper.map(endereco, ResponseEnderecoDto.class);
@@ -87,13 +90,14 @@ public class EnderecoService {
         }
     }
 
-    public ResponseEnderecoDto editarEndereco(Long idEndereco, Endereco endereco){
+    public ResponseEnderecoDto editarEndereco(Long idEndereco, RequestEnderecoDto requestDto){
+        enderecoValid.forEach(v -> v.validar(requestDto)); // Validações do request de endereço
         Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
 
         if (enderecoOptional.isPresent()){
             Endereco enderecoDB = enderecoOptional.get();
             BeanUtils.copyProperties(
-                    endereco,
+                    mapper.map(requestDto, Endereco.class),
                     enderecoDB,
                     "id", "monitorador", "principal");
 
@@ -104,6 +108,7 @@ public class EnderecoService {
     public void deletarEndereco(Long idEndereco){
         Optional<Endereco> optionalEndereco = repository.findById(idEndereco);
         if (optionalEndereco.isPresent()){
+            if (listarEnderecosMonitorador(optionalEndereco.get().getMonitorador().getId()).size()<=1) throw new BusinessException(ErrorCode.SEM_ENDERECOS);// Se o monitorador tem apenas 1 endereço
             repository.deleteById(idEndereco);
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
 

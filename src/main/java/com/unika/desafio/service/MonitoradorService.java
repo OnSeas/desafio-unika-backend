@@ -9,7 +9,7 @@ import com.unika.desafio.model.PessoaFisica;
 import com.unika.desafio.model.PessoaJuridica;
 import com.unika.desafio.model.TipoPessoa;
 import com.unika.desafio.repository.MonitoradorRepository;
-import com.unika.desafio.validations.monitorador.IMonitoradorJaExiste;
+import com.unika.desafio.validations.monitorador.IMonitoradorValid;
 import lombok.Cleanup;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -41,10 +41,10 @@ public class MonitoradorService {
     private ModelMapper mapper = new ModelMapper();
 
     @Autowired
-    private List<IMonitoradorJaExiste> monitoradorJaExiste;
+    private List<IMonitoradorValid> monitoradorValid;
 
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
-        monitoradorJaExiste.forEach(v -> v.validar(requestDto)); // Validando se já existe
+        monitoradorValid.forEach(v -> v.validar(requestDto)); // Validações do request de monitorador
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
         return mapper.map(repository.save(monitorador), ResponsePessoaDto.class);
@@ -74,7 +74,7 @@ public class MonitoradorService {
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
-        monitoradorJaExiste.forEach(v -> v.validar(requestDto, id)); // Validar se tem outro monitorador com informação que não pode ser repetida
+        monitoradorValid.forEach(v -> v.validar(requestDto, id)); // Validações do request de monitorador
 
         Optional<Monitorador> optionalMonitorador = repository.findById(id);
         if (optionalMonitorador.isPresent()){
@@ -128,7 +128,6 @@ public class MonitoradorService {
     }
 
     // Pesquisas
-
     // Buscar por Email
     public List<ResponsePessoaDto> buscarPorEmail(String email){
         List<Monitorador> monitoradores = repository.findByEmailContaining(email);

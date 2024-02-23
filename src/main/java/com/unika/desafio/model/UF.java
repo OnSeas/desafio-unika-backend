@@ -14,7 +14,7 @@ public enum UF {
     MATO_GROSSO("MT"),
     MINAS_GERAIS("MG"),
     MATO_GROSSO_DO_SUL("MS"),
-    GOIAS("GO"), // TODO
+    GOIAS("GO"),
     MARANHAO("MA"),
     RIO_GRANDE_DO_SUL("RS"),
     TOCANTINS("TO"),

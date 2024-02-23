@@ -3,48 +3,50 @@ package com.unika.desafio.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.unika.desafio.model.TipoPessoa;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestPessoaDto {
 
-    @NotNull(message = "O tipo de pessoa não pode ser vazio.")
     TipoPessoa tipoPessoa;
 
-    @NotBlank(message = "O email não pode ser vazio.")
     @Email(message = "Email inválido!")
     String email;
 
-    @NotNull(message = "A data de nascimento não pode ser vazia.")
     @Past
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "pt-BR", timezone = "Brazil/East")
     LocalDate dataNascimento;
 
-    @CPF(message = "O CPF informado é inválido!")
     String cpf;
 
     @Pattern(regexp = "\\d{2}.\\d{3}.\\d{3}-\\d", message = "O RG informado é inválido!")
     String rg;
 
-    @Size(min = 3, max = 50, message = "O nome deve ter entre 3 e 200 caracteres!")
+    @Size(min = 3, max = 50, message = "O nome deve ter entre 3 e 50 caracteres!")
     String nome;
 
     @CNPJ(message = "O CNPJ informado é inválido!")
     String cnpj;
 
-    @Size(min = 3, max = 50, message = "A razão social deve ter entre 3 e 200 caracteres!")
+    @Size(min = 3, max = 50, message = "A razão social deve ter entre 3 e 50 caracteres!")
     String razaoSocial;
 
     @Size(min = 7, max = 18, message = "Tamanho para inscrição estadual inválido!")
     String inscricaoEstadual;
+
+    List<RequestEnderecoDto> enderecoList;
 
    // Para validações de repetição no Banco de dados
    public String getCpfSemFormatacao(){

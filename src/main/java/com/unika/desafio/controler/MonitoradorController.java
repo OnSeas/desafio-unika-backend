@@ -36,11 +36,15 @@ public class MonitoradorController {
     @Autowired
     private ReportService reportService;
 
+    @Transactional
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
         try{
-            System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
+            requestDto.getEnderecoList().forEach(e -> {
+                cadastrarEndereco(responseDto.getId(), e);
+
+            });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -90,7 +94,7 @@ public class MonitoradorController {
 
     @PostMapping("/{idMonitorador}/endereco")
     @Transactional
-    public ResponseEntity<?> cadastrarEndereco(@PathVariable Long idMonitorador, @RequestBody @Valid RequestEnderecoDto requestDto){
+    public ResponseEntity<?> cadastrarEndereco(@PathVariable Long idMonitorador, @RequestBody RequestEnderecoDto requestDto){
         try {
             Monitorador monitorador = monitoradorService.pegarMonitoradorPeloId(idMonitorador);
             ResponseEnderecoDto responseDto = enderecoService.cadastrarEndereco(monitorador, requestDto);

@@ -18,6 +18,11 @@ public class BusinessException extends RuntimeException{
         this.status = status;
     }
 
+    public BusinessException(String message){
+        this.message = message;
+        this.status = HttpStatus.BAD_REQUEST;
+    }
+
     @Override
     public String getMessage() {
         return this.message;
