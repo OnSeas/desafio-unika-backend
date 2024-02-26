@@ -9,20 +9,15 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import com.unika.desafio.service.ReportService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -38,7 +33,7 @@ public class MonitoradorController {
 
     @Transactional
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto){
+    public ResponseEntity<?> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
         try{
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
             requestDto.getEnderecoList().forEach(e -> {
@@ -72,7 +67,7 @@ public class MonitoradorController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizarMonitorador(@RequestBody @Valid RequestPessoaDto requestDto, @PathVariable Long id){
+    public ResponseEntity<?> atualizarMonitorador(@RequestBody RequestPessoaDto requestDto, @PathVariable Long id){
         try {
             System.out.println(requestDto);
             ResponsePessoaDto responseDto = monitoradorService.atualizarMonitorador(requestDto, id);
@@ -126,8 +121,7 @@ public class MonitoradorController {
         }
     }
 
-
-    // Filtros TODO olhar https://vanderloureiro.medium.com/filtros-avan%C3%A7ados-com-jpa-criteria-58fbe92f5171
+    // Filtros
     @GetMapping("buscar/email/{email}")
     public ResponseEntity<?> monitoradorPeloEmail(@PathVariable String email){
         try {
@@ -178,10 +172,22 @@ public class MonitoradorController {
         }
     }
 
-    @GetMapping("report/{tipo}/{id}")
-    public ResponseEntity<?> gerarReport(@PathVariable String tipo, @PathVariable Long id){
+    @GetMapping("report/{id}")
+    public ResponseEntity<?> gerarReport(@PathVariable Long id){
         try {
-            File reportFile = reportService.exportarReport(tipo, id);
+            File reportFile = reportService.exportUmMonitorador(id);
+            return new ResponseEntity<>(reportFile, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("report")
+    public ResponseEntity<?> gerarReport(){
+        try {
+            File reportFile = reportService.exportMonitoradoresPdf();
             return new ResponseEntity<>(reportFile, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -200,20 +206,5 @@ public class MonitoradorController {
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-    }
-
-
-    // Pegar exceção de @Valid e retornar Response
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 }
