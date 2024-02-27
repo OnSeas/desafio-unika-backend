@@ -1,5 +1,6 @@
 package com.unika.desafio.validations.monitorador;
 
+import com.unika.desafio.dto.RequestEnderecoDto;
 import com.unika.desafio.dto.RequestPessoaDto;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.model.Endereco;
@@ -11,15 +12,15 @@ import java.util.List;
 public class ValidarEnderecoList implements IMonitoradorValid{
     @Override
     public void validar(RequestPessoaDto requestDto) {
-
+        enderecoListValid(requestDto.getEnderecoList());
     }
 
     @Override
     public void validar(RequestPessoaDto requestDto, Long id) {
-
+        enderecoListValid(requestDto.getEnderecoList());
     }
 
-    private void enderecoListValid(List<Endereco> enderecoList){
+    private void enderecoListValid(List<RequestEnderecoDto> enderecoList){
         if (enderecoList == null) throw new BusinessException("Lista de endereço não recebida!");
         if (enderecoList.isEmpty()) throw new BusinessException("É necessário enviar um endereço para cadastrar o monitorador");
     }

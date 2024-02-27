@@ -8,6 +8,7 @@ import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.repository.EnderecoRepository;
+import com.unika.desafio.repository.MonitoradorRepository;
 import com.unika.desafio.service.apisExternas.ConexaoViaCep;
 import com.unika.desafio.validations.endereco.IEnderecoValid;
 import org.modelmapper.ModelMapper;
@@ -26,10 +27,6 @@ import java.util.stream.Collectors;
 public class EnderecoService {
     @Autowired
     private EnderecoRepository repository;
-
-    @Autowired
-    private MonitoradorService monitoradorService;
-
     private final ModelMapper mapper = new ModelMapper();
     private final ConexaoViaCep conexaoViaCep = new ConexaoViaCep();
 
@@ -38,8 +35,6 @@ public class EnderecoService {
 
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
         enderecoValid.forEach(v -> v.validar(requestDto)); // Validações do request de endereço
-
-        monitoradorService.monitoradorExiste(monitorador.getId());
         numEnderecos(monitorador);
 
         Endereco endereco = mapper.map(requestDto, Endereco.class);
@@ -62,16 +57,14 @@ public class EnderecoService {
     }
 
     public List<Endereco> listarEnderecosMonitorador(Long id){
-        monitoradorService.monitoradorExiste(id);
-        temAlgumEndereco(id);
+        List<Endereco> enderecoList = repository.findAllByMonitoradorId(id);
+        if (enderecoList.isEmpty())
+            throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+        return enderecoList;
 
-        return repository.findAllByMonitoradorId(id);
     }
 
     public ResponseEnderecoDto getEnderecoPrincipal(Long id){
-        monitoradorService.monitoradorExiste(id);
-        temAlgumEndereco(id);
-
         Endereco enderecoPrincipal = repository.findByMonitoradorIdAndPrincipalIsTrue(id);
 
         if(enderecoPrincipal== null)
@@ -114,14 +107,14 @@ public class EnderecoService {
 
     }
 
-    public void tornarEnderecoPrincipal(Long idMonitor, Long idEndereco){
+    public void tornarEnderecoPrincipal(Long idEndereco){
         Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
         if (enderecoOptional.isPresent()){
             Endereco novoEnderecoPrincipal = enderecoOptional.get();
 
-            validarEndereco(novoEnderecoPrincipal, idMonitor);
+            validarEndereco(novoEnderecoPrincipal, novoEnderecoPrincipal.getMonitorador().getId());
 
-            Endereco enderecoPrincipalAntigo = repository.findByMonitoradorIdAndPrincipalIsTrue(idMonitor);
+            Endereco enderecoPrincipalAntigo = repository.findByMonitoradorIdAndPrincipalIsTrue(novoEnderecoPrincipal.getMonitorador().getId());
             if (enderecoPrincipalAntigo != null){
                 enderecoPrincipalAntigo.setPrincipal(Boolean.FALSE);
             }
@@ -150,18 +143,6 @@ public class EnderecoService {
         }
     }
 
-    private void enderecoExite(Long idEndereco){
-        if(!repository.existsById(idEndereco)){
-            throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
-        }
-    }
-
-    private void temAlgumEndereco(Long idMonitor){
-        if(repository.countByMonitoradorId(idMonitor) == 0){
-            throw new BusinessException(ErrorCode.MONITOR_SEM_ENDERECOS);
-        }
-    }
-
     private void validarEndereco(Endereco endereco, Long idMonitor){
         if (endereco.getPrincipal()){
             if (Objects.equals(endereco.getMonitorador().getId(), idMonitor)){
@@ -170,16 +151,8 @@ public class EnderecoService {
         }
     }
 
-    private void validarCepExiste(String cep) {
-        try {
-            conexaoViaCep.getEnderecoPeloCep(cep);
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.CEP_INVALIDO);
-        }
-    }
-
     private void numEnderecos(Monitorador monitorador){
-        if(monitorador.getEnderecoList().size() >= 3){
+        if(repository.countByMonitoradorId(monitorador.getId()) >= 3){
             throw new BusinessException(ErrorCode.NUM_MAX_ENDERECOS);
         }
     }

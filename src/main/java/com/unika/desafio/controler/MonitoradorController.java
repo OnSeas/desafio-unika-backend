@@ -31,15 +31,10 @@ public class MonitoradorController {
     @Autowired
     private ReportService reportService;
 
-    @Transactional
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarMonitorador(@RequestBody RequestPessoaDto requestDto){
         try{
             ResponsePessoaDto responseDto = monitoradorService.cadastrarMonitorador(requestDto);
-            requestDto.getEnderecoList().forEach(e -> {
-                cadastrarEndereco(responseDto.getId(), e);
-
-            });
             return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
@@ -201,6 +196,18 @@ public class MonitoradorController {
         try {
             String res = monitoradorService.importarMonitoradores(file);
             return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(e.getMessage(), e.getStatus());
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("export/xlsx")
+    public ResponseEntity<?> importarMonitoradores(){
+        try {
+            File file = monitoradorService.exportarMonitoradoresXlsx();
+            return new ResponseEntity<>(file, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){

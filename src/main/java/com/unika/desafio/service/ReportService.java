@@ -22,7 +22,7 @@ public class ReportService {
     @Autowired
     private MonitoradorService monitoradorService;
     long Count = 0;
-    final String PATH = "C:\\Projetos\\relatorios\\";
+    final String PATH = "C:\\Projetos\\zArquivos\\relatorios\\";
 
     public File exportMonitoradoresPdf() throws FileNotFoundException, JRException { //Todos os monitoradores
         List<ResponsePessoaDto> monitoradorList = monitoradorService.listarMonitoradores();

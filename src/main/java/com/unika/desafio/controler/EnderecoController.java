@@ -67,10 +67,10 @@ public class EnderecoController {
         }
     }
 
-    @PutMapping("/{idMonitor}/tornar-principal/{idEndereco}")
-    public ResponseEntity<?> tornarEnderecoPrincipal(@PathVariable Long idEndereco, @PathVariable Long idMonitor){
+    @PutMapping("/tornar-principal/{idEndereco}")
+    public ResponseEntity<?> tornarEnderecoPrincipal(@PathVariable Long idEndereco){
         try {
-            service.tornarEnderecoPrincipal(idMonitor, idEndereco);
+            service.tornarEnderecoPrincipal(idEndereco);
             return new ResponseEntity<>("O endereço foi tornado principal.", HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());

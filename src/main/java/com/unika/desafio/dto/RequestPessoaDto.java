@@ -66,6 +66,7 @@ public class RequestPessoaDto {
                 ", cnpj='" + cnpj + '\'' +
                 ", razaoSocial='" + razaoSocial + '\'' +
                 ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                ", enderecoList=" + enderecoList +
                 '}';
     }
 }
