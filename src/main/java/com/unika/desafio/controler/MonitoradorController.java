@@ -1,9 +1,6 @@
 package com.unika.desafio.controler;
 
-import com.unika.desafio.dto.RequestEnderecoDto;
-import com.unika.desafio.dto.RequestPessoaDto;
-import com.unika.desafio.dto.ResponseEnderecoDto;
-import com.unika.desafio.dto.ResponsePessoaDto;
+import com.unika.desafio.dto.*;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
@@ -116,52 +113,11 @@ public class MonitoradorController {
         }
     }
 
-    // Filtros
-    @GetMapping("buscar/email/{email}")
-    public ResponseEntity<?> monitoradorPeloEmail(@PathVariable String email){
+    // Filtro
+    @PostMapping("/filtro")
+    public ResponseEntity<?> filtrarMonitorador(@RequestBody FiltroDTO filtro){
         try {
-            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorEmail(email);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (BusinessException e){
-            return new ResponseEntity<>(e.getMessage(), e.getStatus());
-        }
-    }
-
-    @GetMapping("buscar/cpf/{cpf}")
-    public ResponseEntity<?> monitoradorPeloCpf(@PathVariable String cpf){
-        try {
-            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorCpf(cpf);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (BusinessException e){
-            return new ResponseEntity<>(e.getMessage(), e.getStatus());
-        }
-    }
-
-    @GetMapping("buscar/cnpj/{cnpj}")
-    public ResponseEntity<?> monitoradorPeloCnpj(@PathVariable String cnpj){
-        try {
-            List<ResponsePessoaDto> responseDto = monitoradorService.buscarPorCnpj(cnpj);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (BusinessException e){
-            return new ResponseEntity<>(e.getMessage(), e.getStatus());
-        }
-    }
-
-    @GetMapping("buscar-pf")
-    public ResponseEntity<?> buscarPessoasFisicas(){
-        try {
-            List<ResponsePessoaDto> responseDtoList = monitoradorService.getAllPF();
-            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
-        } catch (BusinessException e){
-            return new ResponseEntity<>(e.getMessage(), e.getStatus());
-        }
-    }
-
-    @GetMapping("buscar-pj")
-    public ResponseEntity<?> buscarPessoasJuridicas(){
-        try {
-            List<ResponsePessoaDto> responseDtoList = monitoradorService.getAllPJ();
-            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+            return new ResponseEntity<>(monitoradorService.buscarMonitoradoresFiltro(filtro), HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }

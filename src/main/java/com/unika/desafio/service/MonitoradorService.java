@@ -1,9 +1,6 @@
 package com.unika.desafio.service;
 
-import com.unika.desafio.dto.RequestEnderecoDto;
-import com.unika.desafio.dto.RequestPessoaDto;
-import com.unika.desafio.dto.ResponseEnderecoDto;
-import com.unika.desafio.dto.ResponsePessoaDto;
+import com.unika.desafio.dto.*;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.*;
@@ -142,57 +139,32 @@ public class MonitoradorService {
     }
 
     // Pesquisas
-    // Buscar por Email
-    public List<ResponsePessoaDto> buscarPorEmail(String email){
-        List<Monitorador> monitoradores = repository.findByEmailContaining(email);
-        if (!monitoradores.isEmpty()){
-            return monitoradores
-                    .stream()
-                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
-                    .collect(Collectors.toList());
-        } else throw new BusinessException(ErrorCode.NENHUM_MONITORADOR_POR_EMAIL);
-    }
+    public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroDTO filtro){ // TODO descobrir se tem uma maneira mais eficiente (mais rápida)
+        List<Monitorador> monitoradorList;
+        if (filtro.getBusca() == null || filtro.getBusca().isBlank() || filtro.getTipoBusca() == null) monitoradorList = repository.findAll();
+        else switch (filtro.getTipoBusca()){
+            case EMAIL ->monitoradorList = repository.findByEmailContaining(filtro.getBusca());
+            case CPF -> {filtro.setBusca(limparBusca(filtro.getBusca())); monitoradorList = repository.findByCpfContaining(filtro.getBusca());}
+            case CNPJ -> {filtro.setBusca(limparBusca(filtro.getBusca())); monitoradorList = repository.findByCnpjContaining(filtro.getBusca());}
+            default -> throw new BusinessException("Algo deu errado na pesquisa!");
+        };
 
-    // Buscar por CPF
-    public List<ResponsePessoaDto> buscarPorCpf(String cpf){
-        cpf = cpf.replaceAll("[.]", "").replaceAll("[-]", "");
-        List<Monitorador> monitoradores = repository.findByCpfContaining(cpf);
-        if (!monitoradores.isEmpty()){
-            return monitoradores
-                    .stream()
-                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
-                    .collect(Collectors.toList());
-        } else throw new BusinessException(ErrorCode.PESSOA_POR_CPF);
-    }
+        if (filtro.getSoAtivados()) monitoradorList = monitoradorList.stream().filter(Monitorador::isAtivo).collect(Collectors.toList());
 
-    // Buscar por CNPJ
-    public List<ResponsePessoaDto> buscarPorCnpj(String cnpj){
-        cnpj = cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
-        List<Monitorador> monitoradores = repository.findByCnpjContaining(cnpj);
-        if (!monitoradores.isEmpty()){
-            return monitoradores
-                    .stream()
-                    .map(m -> mapper.map(m, ResponsePessoaDto.class))
-                    .collect(Collectors.toList());
-        } else throw new BusinessException(ErrorCode.PESSOA_POR_CNPJ);
-    }
+        if(filtro.getPessoaJuridica() || filtro.getPessoaFisica()){ // Se os dois forem falso mostra ambos.
+            if (!filtro.getPessoaFisica()) monitoradorList = monitoradorList.stream().filter(m -> !m.getTipoPessoa().equals(TipoPessoa.PESSOA_FISICA)).collect(Collectors.toList());
+            if (!filtro.getPessoaJuridica()) monitoradorList = monitoradorList.stream().filter(m -> !m.getTipoPessoa().equals(TipoPessoa.PESSOA_JURIDICA)).collect(Collectors.toList());
+        }
 
-    public List<ResponsePessoaDto> getAllPF(){
-        List<Monitorador> pessoaFisicaList = repository.findByTipoPessoa(TipoPessoa.PESSOA_FISICA);
-        return pessoaFisicaList.
-                stream()
+        return monitoradorList
+                .stream()
                 .map(m -> mapper.map(m, ResponsePessoaDto.class))
                 .collect(Collectors.toList());
     }
 
-    public List<ResponsePessoaDto> getAllPJ(){
-        List<Monitorador> pessoaFisicaList = repository.findByTipoPessoa(TipoPessoa.PESSOA_JURIDICA);
-        return pessoaFisicaList.
-                stream()
-                .map(m -> mapper.map(m, ResponsePessoaDto.class))
-                .collect(Collectors.toList());
+    private String limparBusca(String busca){
+        return busca.replaceAll("\\.", "").replaceAll("-", "").replaceAll("/", "");
     }
-
 
     // Funções usando apache POI, referências usadas: https://www.devmedia.com.br/apache-poi-manipulando-documentos-em-java/31778
     public File exportarMonitoradoresXlsx() throws IOException{
