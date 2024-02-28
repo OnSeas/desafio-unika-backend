@@ -25,6 +25,6 @@ public class ValidarRazaoSocial implements IMonitoradorValid{
 
     private void razaoSocialValid(String razaoSocial){
         if (razaoSocial == null || razaoSocial.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PJ_INVALIDA);
-        if (razaoSocial.length() < 3 || razaoSocial.length() > 50) throw new BusinessException("A razão social deve ter entre 3 e 50 caracteres!");
+        if (razaoSocial.length() < 3 || razaoSocial.length() > 30) throw new BusinessException("A razão social deve ter entre 3 e 30 caracteres!");
     }
 }

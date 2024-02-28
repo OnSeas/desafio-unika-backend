@@ -24,6 +24,6 @@ public class RequestEnderecoDto {
 
     UF estado;
 
-    Boolean principal;
+    Boolean principal; // Usado no import de planilhas
 
 }

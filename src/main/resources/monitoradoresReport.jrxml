@@ -52,9 +52,6 @@
     <field name="inscricaoEstadual" class="java.lang.String"/>
     <field name="nome" class="java.lang.String"/>
     <field name="razaoSocial" class="java.lang.String"/>
-    <variable name="statusMonitorador" class="java.lang.Boolean">
-        <variableExpression><![CDATA[$F{ativo} ? true : false]]></variableExpression>
-    </variable>
     <background>
         <band/>
     </background>
@@ -127,15 +124,6 @@
                 <textFieldExpression><![CDATA[$F{tipoPessoa}.getCodigo() == 0 ? $F{rg} : $F{inscricaoEstadual}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement key="" isPrintRepeatedValues="false" x="440" y="150" width="100" height="20" uuid="4e90fbe9-4575-4568-92c7-481fd4276d90">
-                    <property name="com.jaspersoft.studio.unit.y" value="px"/>
-                </reportElement>
-                <textElement>
-                    <font size="12"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$V{statusMonitorador} ? "Ativo" : "Inativo"]]></textFieldExpression>
-            </textField>
-            <textField>
                 <reportElement x="20" y="60" width="100" height="20" uuid="9492ebdb-827e-42f4-a3f3-122464d9b63c">
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -180,6 +168,13 @@
                     <font size="12"/>
                 </textElement>
                 <textFieldExpression><![CDATA[($F{dataNascimento}).format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="440" y="150" width="100" height="30" uuid="e803784c-65b6-408c-8fce-ba5b4501cb0e"/>
+                <textElement>
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ativo} ? "ativo" : "inativo"]]></textFieldExpression>
             </textField>
         </band>
         <band height="130">

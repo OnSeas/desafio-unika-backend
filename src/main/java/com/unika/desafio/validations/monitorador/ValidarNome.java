@@ -24,6 +24,7 @@ public class ValidarNome implements IMonitoradorValid{
 
     private void nomeValid(String nome){
         if (nome == null || nome.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PF_INVALIDA);
-        if (nome.length() < 3 || nome.length() > 50) throw new BusinessException("O nome deve ter entre 3 e 50 caracteres!");
+        if (nome.length() < 3 || nome.length() > 30) throw new BusinessException("O nome deve ter entre 3 e 30 caracteres!");
+        if (!nome.matches("[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]*")) throw new BusinessException("O nome não pode conter números ou caracteres especiais!");
     }
 }

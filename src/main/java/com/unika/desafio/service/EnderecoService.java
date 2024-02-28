@@ -8,7 +8,6 @@ import com.unika.desafio.exceptions.ErrorCode;
 import com.unika.desafio.model.Endereco;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.repository.EnderecoRepository;
-import com.unika.desafio.repository.MonitoradorRepository;
 import com.unika.desafio.service.apisExternas.ConexaoViaCep;
 import com.unika.desafio.validations.endereco.IEnderecoValid;
 import org.modelmapper.ModelMapper;
@@ -34,18 +33,20 @@ public class EnderecoService {
     private List<IEnderecoValid> enderecoValid;
 
     public ResponseEnderecoDto cadastrarEndereco(Monitorador monitorador, RequestEnderecoDto requestDto) throws IOException, InterruptedException {
-        enderecoValid.forEach(v -> v.validar(requestDto)); // Validações do request de endereço
-        numEnderecos(monitorador);
+        try{
+            enderecoValid.forEach(v -> v.validar(requestDto)); // Validações do request de endereço
+            numEnderecos(monitorador);
 
-        Endereco endereco = mapper.map(requestDto, Endereco.class);
-        endereco.setMonitorador(monitorador);
+            Endereco endereco = mapper.map(requestDto, Endereco.class);
+            endereco.setMonitorador(monitorador);
 
-        if(endereco.getPrincipal()){
-            temOutroEnderecoPrincipal(monitorador.getId());
+            endereco.setPrincipal(!temOutroEnderecoPrincipal(monitorador.getId())); // Setar o endereço como principal se não tiver outro.
+
+            repository.save(endereco);
+            return mapper.map(endereco, ResponseEnderecoDto.class);
+        } catch (BusinessException e){
+            throw new BusinessException("Endereço " + requestDto.getEndereco() + ": " + e.getMessage());
         }
-
-        repository.save(endereco);
-        return mapper.map(endereco, ResponseEnderecoDto.class);
     }
 
     public List<ResponseEnderecoDto> listarEnderecosMonitoradorResponse(Long id){
@@ -137,10 +138,8 @@ public class EnderecoService {
     }
 
     // VALIDACOES
-    private void temOutroEnderecoPrincipal(Long idMonitor){
-        if(repository.findByMonitoradorIdAndPrincipalIsTrue(idMonitor) != null){
-            throw new BusinessException(ErrorCode.ENDERECO_PRINCIPAL_UNICO);
-        }
+    private boolean temOutroEnderecoPrincipal(Long idMonitor){
+        return repository.findByMonitoradorIdAndPrincipalIsTrue(idMonitor) != null;
     }
 
     private void validarEndereco(Endereco endereco, Long idMonitor){
