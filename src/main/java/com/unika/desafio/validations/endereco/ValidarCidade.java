@@ -14,6 +14,6 @@ public class ValidarCidade implements IEnderecoValid{
     private void cidadeValid(String cidade){
         if (cidade == null || cidade.isBlank()) throw new BusinessException("Campo cidade não pode ser vazio");
         if (cidade.length() < 3 || cidade.length() > 20) throw new BusinessException("Campo bairro deve ter entre 3 e 20 caracteres");
-        if (!cidade.matches("[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]*")) throw new BusinessException("Cidade não pode conter números ou caracteres especiais!");
+        if (!cidade.matches("[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑª ]*")) throw new BusinessException("Cidade não pode conter números ou caracteres especiais!");
     }
 }

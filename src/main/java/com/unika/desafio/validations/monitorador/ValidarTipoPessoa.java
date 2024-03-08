@@ -20,7 +20,7 @@ public class ValidarTipoPessoa implements IMonitoradorValid{
     }
 
     private void tipoPessoaValid(TipoPessoa tipoPessoa){
-        if (tipoPessoa == null) throw new BusinessException("O tipo de pessoa não pode ser vazio.");
+        if (tipoPessoa == null) throw new BusinessException("É necessário selecionar o tipo de pessoa!");
         if (!(tipoPessoa.equals(TipoPessoa.PESSOA_FISICA) || tipoPessoa.equals(TipoPessoa.PESSOA_JURIDICA))) throw new BusinessException(ErrorCode.TIPO_PESSOA_INVALIDO);
     }
 }

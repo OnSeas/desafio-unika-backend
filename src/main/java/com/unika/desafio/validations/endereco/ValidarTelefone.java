@@ -13,7 +13,7 @@ public class ValidarTelefone implements IEnderecoValid{
 
     private void telefoneValid(String telefone){
         if (telefone == null || telefone.isBlank()) throw new BusinessException("Campo telefone não pode ser vazio");
-        if (telefone.length() < 14 || telefone.length() > 15 || (!telefone.matches("\\(\\d{2}\\)\\d?\\d{4}-\\d{4}")))
+        if (telefone.length() < 11 || telefone.length() > 15 || (!telefone.matches("\\(?\\d{2}\\)?\\d?\\d{4}-?\\d{4}")))
             throw new BusinessException("O campo telefone tem que seguir o padrão (00)00000-0000 ou (00)0000-0000");
     }
 }

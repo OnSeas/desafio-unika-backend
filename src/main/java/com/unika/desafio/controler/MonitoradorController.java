@@ -72,8 +72,8 @@ public class MonitoradorController {
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarMonitorador(@PathVariable Long id){
         try {
-            monitoradorService.deletarMonitorador(id);
-            return new ResponseEntity<>("Monitorador Deletado com sucesso!", HttpStatus.OK);
+            ResponseEnderecoDto res = monitoradorService.deletarMonitorador(id);
+            return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
@@ -96,8 +96,8 @@ public class MonitoradorController {
     @PutMapping("/ativar/{idMonitorador}")
     public ResponseEntity<?> ativarMonitorador(@PathVariable Long idMonitorador){
         try {
-            monitoradorService.ativarMonitorador(idMonitorador);
-            return new ResponseEntity<>("O monitorador foi ativado!", HttpStatus.OK);
+            ResponsePessoaDto res = monitoradorService.ativarMonitorador(idMonitorador);
+            return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
@@ -106,8 +106,8 @@ public class MonitoradorController {
     @PutMapping("/desativar/{idMonitorador}")
     public ResponseEntity<?> desativarMonitorador(@PathVariable Long idMonitorador){
         try {
-            monitoradorService.desativarMonitorador(idMonitorador);
-            return new ResponseEntity<>("O monitorador foi desativado!", HttpStatus.OK);
+            ResponsePessoaDto res = monitoradorService.desativarMonitorador(idMonitorador);
+            return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }

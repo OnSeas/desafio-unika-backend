@@ -27,7 +27,7 @@ public class ConexaoViaCep {
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 400 || response.body().contains("\"erro\": true")){
+        if (response.statusCode() == 400 || response.body().contains("\"erro\": \"true\"")){
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
         }
 

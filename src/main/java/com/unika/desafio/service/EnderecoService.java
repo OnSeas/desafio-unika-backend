@@ -40,6 +40,7 @@ public class EnderecoService {
             Endereco endereco = mapper.map(requestDto, Endereco.class);
             endereco.setMonitorador(monitorador);
 
+            // Todo GERA um bug (além do bug, tem que impedir de deletar o endereço principal será?)
             endereco.setPrincipal(!temOutroEnderecoPrincipal(monitorador.getId())); // Setar o endereço como principal se não tiver outro.
 
             repository.save(endereco);
@@ -99,16 +100,16 @@ public class EnderecoService {
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
     }
 
-    public void deletarEndereco(Long idEndereco){
+    public ResponseEnderecoDto deletarEndereco(Long idEndereco){
         Optional<Endereco> optionalEndereco = repository.findById(idEndereco);
         if (optionalEndereco.isPresent()){
             if (listarEnderecosMonitorador(optionalEndereco.get().getMonitorador().getId()).size()<=1) throw new BusinessException(ErrorCode.SEM_ENDERECOS);// Se o monitorador tem apenas 1 endereço
-            repository.deleteById(idEndereco);
+            repository.delete(optionalEndereco.get());
+            return mapper.map(optionalEndereco.get(), ResponseEnderecoDto.class);
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
-
     }
 
-    public void tornarEnderecoPrincipal(Long idEndereco){
+    public ResponseEnderecoDto tornarEnderecoPrincipal(Long idEndereco){
         Optional<Endereco> enderecoOptional = repository.findById(idEndereco);
         if (enderecoOptional.isPresent()){
             Endereco novoEnderecoPrincipal = enderecoOptional.get();
@@ -121,7 +122,7 @@ public class EnderecoService {
             }
 
             novoEnderecoPrincipal.setPrincipal(Boolean.TRUE);
-            repository.save(novoEnderecoPrincipal);
+            return mapper.map(repository.save(novoEnderecoPrincipal), ResponseEnderecoDto.class);
 
         } else throw new BusinessException(ErrorCode.ENDERECO_NAO_ENCONTRADO);
     }

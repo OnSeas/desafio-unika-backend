@@ -60,8 +60,8 @@ public class EnderecoController {
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEndereco(@PathVariable Long id){
         try {
-            service.deletarEndereco(id);
-            return new ResponseEntity<>("Endereco deletado", HttpStatus.OK);
+            ResponseEnderecoDto res = service.deletarEndereco(id);
+            return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
@@ -70,8 +70,8 @@ public class EnderecoController {
     @PutMapping("/tornar-principal/{idEndereco}")
     public ResponseEntity<?> tornarEnderecoPrincipal(@PathVariable Long idEndereco){
         try {
-            service.tornarEnderecoPrincipal(idEndereco);
-            return new ResponseEntity<>("O endereço foi tornado principal.", HttpStatus.OK);
+            ResponseEnderecoDto res= service.tornarEnderecoPrincipal(idEndereco);
+            return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }

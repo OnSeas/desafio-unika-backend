@@ -107,12 +107,16 @@ public class MonitoradorService {
         }
     }
 
-    public void deletarMonitorador(Long id){
-        monitoradorExiste(id);
-        repository.deleteById(id);
+    public ResponseEnderecoDto deletarMonitorador(Long id){
+        Optional<Monitorador> monitoradorOptional = repository.findById(id);
+        if (monitoradorOptional.isPresent()){
+            repository.deleteById(id);
+            return mapper.map(monitoradorOptional.get(), ResponseEnderecoDto.class);
+        } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
+
     }
 
-    public void ativarMonitorador(Long id){
+    public ResponsePessoaDto ativarMonitorador(Long id){
         Optional<Monitorador> optionalMonitorador = repository.findById(id);
         if(optionalMonitorador.isPresent()){
             Monitorador monitorador = optionalMonitorador.get();
@@ -121,11 +125,11 @@ public class MonitoradorService {
                 throw new BusinessException(ErrorCode.MONITORADOR_JA_ATIVO);
 
             monitorador.ativar();
-            repository.save(monitorador);
+            return mapper.map(repository.save(monitorador), ResponsePessoaDto.class);
         } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
-    public void desativarMonitorador(Long id){
+    public ResponsePessoaDto desativarMonitorador(Long id){
         Optional<Monitorador> optionalMonitorador = repository.findById(id);
         if(optionalMonitorador.isPresent()){
             Monitorador monitorador = optionalMonitorador.get();
@@ -134,7 +138,7 @@ public class MonitoradorService {
                 throw new BusinessException(ErrorCode.MONITORADOR_JA_DESATIVADO);
 
             monitorador.desativar();
-            repository.save(monitorador);
+            return mapper.map(repository.save(monitorador), ResponsePessoaDto.class);
         } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
@@ -167,7 +171,7 @@ public class MonitoradorService {
     }
 
     // Funções usando apache POI, referências usadas: https://www.devmedia.com.br/apache-poi-manipulando-documentos-em-java/31778
-    public File exportarMonitoradoresXlsx() throws IOException{
+    public File exportarMonitoradoresXlsx(){
         final String PATH = "C:\\Projetos\\zArquivos\\excel\\";
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -345,11 +349,5 @@ public class MonitoradorService {
         } else{
             return mapper.map(requestDto, PessoaJuridica.class);
         }
-    }
-
-    // Validacoes
-    public void monitoradorExiste(Long id){
-        if(!repository.existsById(id))
-            throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 }
