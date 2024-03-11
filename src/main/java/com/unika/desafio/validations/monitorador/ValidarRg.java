@@ -35,7 +35,7 @@ public class ValidarRg implements IMonitoradorValid{
 
     private void rgValid(String rg){
         if (rg == null || rg.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PF_INVALIDA);
-        if (rg.length() != 12 || (!rg.matches("\\d{2}.\\d{3}.\\d{3}-\\d"))) throw new BusinessException("O RG deve seguir o padrão 00.000.000-0");
+        if (rg.length() > 12 || rg.length() < 9 || (!rg.matches("\\d{2}.?\\d{3}.?\\d{3}-?\\d"))) throw new BusinessException("O RG deve seguir o padrão 00.000.000-0");
         // Validar de acordo com o código validador?
     }
 }

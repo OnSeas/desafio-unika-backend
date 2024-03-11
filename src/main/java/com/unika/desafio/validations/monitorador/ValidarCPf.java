@@ -37,7 +37,7 @@ public class ValidarCPf implements IMonitoradorValid{
 
     private void cpfInputValid(String cpf){
         if(cpf == null || cpf.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PF_INVALIDA);
-        if(cpf.length() != 14 || (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}"))) throw new BusinessException("O CPF precisa seguir o padrão 000.000.000-00");
+        if(cpf.length() > 14 || cpf.length() < 11 || (!cpf.matches("\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}"))) throw new BusinessException("O CPF precisa seguir o padrão 000.000.000-00");
         if (!isCPF(cpf.replaceAll("\\.", "").replaceAll("-", ""))) throw new BusinessException("CPF Inválido!");
     }
 

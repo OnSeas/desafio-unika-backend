@@ -38,7 +38,7 @@ public class ValidarCNPJ implements IMonitoradorValid{
 
     private void cnpjValid(String cnpj){
         if (cnpj == null || cnpj.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PJ_INVALIDA);
-        if (cnpj.length() != 18 || (!cnpj.matches("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}"))) throw new BusinessException("O CNPJ deve seguir o padrão 00.000.000/0000-00");
+        if (cnpj.length() > 18 || cnpj.length() < 14 || (!cnpj.matches("\\d{2}\\.?\\d{3}\\.?\\d{3}/?\\d{4}-?\\d{2}"))) throw new BusinessException("O CNPJ deve seguir o padrão 00.000.000/0000-00");
         if (!isCNPJ(cnpj.replaceAll("\\.", "").replaceAll("/", "").replaceAll("-", ""))) throw new BusinessException("CNPJ inválido!");
     }
 
