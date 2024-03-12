@@ -1,6 +1,5 @@
 package com.unika.desafio.model;
 
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
 

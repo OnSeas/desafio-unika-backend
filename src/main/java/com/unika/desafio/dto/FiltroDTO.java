@@ -16,15 +16,26 @@ public class FiltroDTO {
 
     @Getter
     public enum TipoBusca{
-        CPF("cpf"),
-        CNPJ("cnpj"),
-        EMAIL("email");
+        CPF(0),
+        CNPJ(1),
+        EMAIL(2);
 
-        private final String label;
+        private final int value;
 
-        TipoBusca(String label){
-            this.label = label;
+        TipoBusca(int value){
+            this.value = value;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "FiltroDTO{" +
+                "busca='" + busca + '\'' +
+                ", tipoBusca=" + tipoBusca +
+                ", pessoaFisica=" + pessoaFisica +
+                ", pessoaJuridica=" + pessoaJuridica +
+                ", soAtivados=" + soAtivados +
+                '}';
     }
 }
 

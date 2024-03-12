@@ -144,6 +144,8 @@ public class MonitoradorService {
 
     // Pesquisas
     public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroDTO filtro){ // TODO descobrir se tem uma maneira mais eficiente (mais rápida)
+        System.out.println(filtro);
+
         List<Monitorador> monitoradorList;
         if (filtro.getBusca() == null || filtro.getBusca().isBlank() || filtro.getTipoBusca() == null) monitoradorList = repository.findAll();
         else switch (filtro.getTipoBusca()){
