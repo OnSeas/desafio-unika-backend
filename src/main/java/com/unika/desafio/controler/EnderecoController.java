@@ -80,10 +80,14 @@ public class EnderecoController {
     @GetMapping("getbyCep/{cep}")
     public ResponseEntity<?> getEnderecoByCep(@PathVariable String cep){
         try{
+//            Thread.sleep(1000);
             ResponseEnderecoDto res = service.getEnderecoByCep(cep);
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         }
+//        catch (InterruptedException ex){
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
     }
 }

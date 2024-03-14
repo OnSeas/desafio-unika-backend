@@ -6,15 +6,21 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import com.unika.desafio.service.ReportService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -127,7 +133,7 @@ public class MonitoradorController {
     public ResponseEntity<?> gerarReport(@PathVariable Long id){
         try {
             File reportFile = reportService.exportUmMonitorador(id);
-            return new ResponseEntity<>(reportFile, HttpStatus.OK);
+            return new ResponseEntity<>(FileUtils.readFileToByteArray(reportFile), HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
@@ -139,7 +145,7 @@ public class MonitoradorController {
     public ResponseEntity<?> gerarReport(){
         try {
             File reportFile = reportService.exportMonitoradoresPdf();
-            return new ResponseEntity<>(reportFile, HttpStatus.OK);
+            return new ResponseEntity<>(FileUtils.readFileToByteArray(reportFile), HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
@@ -148,10 +154,12 @@ public class MonitoradorController {
     }
 
     @PostMapping("import")
-    public ResponseEntity<?> importarMonitoradores(@RequestBody File file){
+    public ResponseEntity<?> importarMonitoradores(@RequestParam("file") MultipartFile file){
         try {
-            String res = monitoradorService.importarMonitoradores(file);
-            return new ResponseEntity<>(res, HttpStatus.OK);
+            File fileImport = new File("C:\\Projetos\\zArquivos\\recebidos\\" + file.getOriginalFilename());
+            FileUtils.writeByteArrayToFile(fileImport, file.getBytes());
+            List<ResponsePessoaDto> monitoradores = monitoradorService.importarMonitoradores(fileImport);
+            return new ResponseEntity<>(monitoradores, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){
@@ -163,7 +171,7 @@ public class MonitoradorController {
     public ResponseEntity<?> importarMonitoradores(){
         try {
             File file = monitoradorService.exportarMonitoradoresXlsx();
-            return new ResponseEntity<>(file, HttpStatus.OK);
+            return new ResponseEntity<>(FileUtils.readFileToByteArray(file), HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (Exception e){

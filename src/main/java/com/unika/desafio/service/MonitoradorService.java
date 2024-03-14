@@ -275,7 +275,9 @@ public class MonitoradorService {
     }
 
     @Transactional
-    public String importarMonitoradores(File file) throws IOException {
+    public List<ResponsePessoaDto> importarMonitoradores(File file) throws IOException {
+        List<ResponsePessoaDto> monitoradorList = new ArrayList<>();
+
         if(!file.getName().endsWith(".xlsx") && !file.getName().endsWith(".xls")){
             throw new BusinessException(ErrorCode.TIPO_ARQUIVO_INVALIDO);
         }
@@ -327,7 +329,8 @@ public class MonitoradorService {
                 requestPessoaDto.setEnderecoList(requestEndList);
 
                 System.out.println(requestPessoaDto);
-                cadastrarMonitorador(requestPessoaDto);
+                ResponsePessoaDto resDTO = cadastrarMonitorador(requestPessoaDto);
+                monitoradorList.add(resDTO);
             } catch (BusinessException e){
                 throw new BusinessException(
                         "Seu arquivo possuí um erro na linha " + (rows.indexOf(row)+1) + ". Erro: " + e.getMessage());
@@ -337,7 +340,7 @@ public class MonitoradorService {
             }
         }
 
-        return "Os monitoradores foram importados!";
+        return monitoradorList;
     }
 
     private List<?> toList(Iterator<?> iterator){

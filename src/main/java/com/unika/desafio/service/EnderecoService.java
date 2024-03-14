@@ -129,8 +129,7 @@ public class EnderecoService {
 
     public ResponseEnderecoDto getEnderecoByCep(String cep){
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            ResponseEnderecoDto endereco = objectMapper.readValue(conexaoViaCep.getEnderecoPeloCep(cep).body(), ResponseEnderecoDto.class);
+            ResponseEnderecoDto endereco = conexaoViaCep.getEnderecoPeloCep(cep);
             System.out.println(endereco);
             return endereco;
         } catch (Exception e){

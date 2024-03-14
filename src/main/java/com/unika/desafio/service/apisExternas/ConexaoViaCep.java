@@ -1,5 +1,7 @@
 package com.unika.desafio.service.apisExternas;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unika.desafio.dto.ResponseEnderecoDto;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
 
@@ -13,7 +15,7 @@ public class ConexaoViaCep {
     final String ENDERECO = "http://viacep.com.br/ws/";
     final String TIPO = "/json/";
 
-    public HttpResponse<String> getEnderecoPeloCep(String cep) throws IOException, InterruptedException {
+    public ResponseEnderecoDto getEnderecoPeloCep(String cep) throws IOException, InterruptedException {
 
         if (cep == null || cep.isBlank()){
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
@@ -27,10 +29,12 @@ public class ConexaoViaCep {
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 400 || response.body().contains("\"erro\": \"true\"")){
+        if (response.statusCode() != 200 || response.body().contains("erro")){
             throw new BusinessException(ErrorCode.CEP_INVALIDO);
         }
 
-        return response;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(response.body(), ResponseEnderecoDto.class);
     }
 }

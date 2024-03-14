@@ -18,10 +18,10 @@ public class ValidarCep implements IEnderecoValid{
     private void cepValid(String cep){
         if (cep == null || cep.isBlank()) throw new BusinessException("Campo CEP não pode ser vazio");
         if ((cep.length() != 9 && cep.length() != 8) || (!cep.matches("\\d{5}-?\\d{3}"))) throw new BusinessException("CEP deve seguir o seguinte padrão: 00000-000");
-        try { // A conexão deixa o cadastro muito mais lento
-            conexaoViaCep.getEnderecoPeloCep(cep);
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.CEP_INVALIDO);
-        }
+//        try { // A conexão deixa o cadastro muito mais lento
+//            conexaoViaCep.getEnderecoPeloCep(cep);
+//        } catch (Exception e) {
+//            throw new BusinessException(ErrorCode.CEP_INVALIDO);
+//        }
     }
 }
