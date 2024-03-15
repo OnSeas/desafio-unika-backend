@@ -3,6 +3,7 @@ package com.unika.desafio.validations.monitorador;
 import com.unika.desafio.dto.RequestPessoaDto;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
+import com.unika.desafio.mask.Mask;
 import com.unika.desafio.model.TipoPessoa;
 import com.unika.desafio.repository.MonitoradorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class ValidarCNPJ implements IMonitoradorValid{
     public void validar(RequestPessoaDto requestDto) {
         if (requestDto.getTipoPessoa() == TipoPessoa.PESSOA_JURIDICA){
             cnpjValid(requestDto.getCnpj());
-            if (repository.findByCnpj(requestDto.getCnpjSemFormatacao()) != null){
+            if (repository.findByCnpj(Mask.removeMaskCNPJ(requestDto.getCnpj())) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
             }
         }
@@ -30,7 +31,7 @@ public class ValidarCNPJ implements IMonitoradorValid{
     public void validar(RequestPessoaDto requestDto, Long id) {
         if (requestDto.getTipoPessoa() == TipoPessoa.PESSOA_JURIDICA){
             cnpjValid(requestDto.getCnpj());
-            if (repository.findByDifferentCnpj(requestDto.getCnpjSemFormatacao(), id) != null){
+            if (repository.findByDifferentCnpj(Mask.removeMaskCNPJ(requestDto.getCnpj()), id) != null){
                 throw new BusinessException(ErrorCode.CNPJ_REPETIDO);
             }
         }
@@ -39,7 +40,7 @@ public class ValidarCNPJ implements IMonitoradorValid{
     private void cnpjValid(String cnpj){
         if (cnpj == null || cnpj.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PJ_INVALIDA);
         if (cnpj.length() > 18 || cnpj.length() < 14 || (!cnpj.matches("\\d{2}\\.?\\d{3}\\.?\\d{3}/?\\d{4}-?\\d{2}"))) throw new BusinessException("O CNPJ deve seguir o padrão 00.000.000/0000-00");
-        if (!isCNPJ(cnpj.replaceAll("\\.", "").replaceAll("/", "").replaceAll("-", ""))) throw new BusinessException("CNPJ inválido!");
+        if (!isCNPJ(Mask.removeMaskCNPJ(cnpj))) throw new BusinessException("CNPJ inválido!");
     }
 
     // Validador genérico de cnpj - fonte:https://www.devmedia.com.br/validando-o-cnpj-em-uma-aplicacao-java/22374

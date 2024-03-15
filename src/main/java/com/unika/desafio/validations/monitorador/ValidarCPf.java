@@ -3,6 +3,7 @@ package com.unika.desafio.validations.monitorador;
 import com.unika.desafio.dto.RequestPessoaDto;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
+import com.unika.desafio.mask.Mask;
 import com.unika.desafio.model.TipoPessoa;
 import com.unika.desafio.repository.MonitoradorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class ValidarCPf implements IMonitoradorValid{
     public void validar(RequestPessoaDto requestDto) {
         if (requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             cpfInputValid(requestDto.getCpf());
-            if(repository.findByCpf(requestDto.getCpfSemFormatacao()) != null){
+            if(repository.findByCpf(Mask.removeMaskCPF(requestDto.getCpf())) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
         }
@@ -29,7 +30,7 @@ public class ValidarCPf implements IMonitoradorValid{
     public void validar(RequestPessoaDto requestDto, Long id) {
         if (requestDto.getTipoPessoa() == TipoPessoa.PESSOA_FISICA){
             cpfInputValid(requestDto.getCpf());
-            if(repository.findByDifferentCpf(requestDto.getCpfSemFormatacao(), id) != null){
+            if(repository.findByDifferentCpf(Mask.removeMaskCPF(requestDto.getCpf()), id) != null){
                 throw new BusinessException(ErrorCode.CPF_REPETIDO);
             }
         }
@@ -38,7 +39,7 @@ public class ValidarCPf implements IMonitoradorValid{
     private void cpfInputValid(String cpf){
         if(cpf == null || cpf.isBlank()) throw new BusinessException(ErrorCode.REQUISICAO_PF_INVALIDA);
         if(cpf.length() > 14 || cpf.length() < 11 || (!cpf.matches("\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}"))) throw new BusinessException("O CPF precisa seguir o padrão 000.000.000-00");
-        if (!isCPF(cpf.replaceAll("\\.", "").replaceAll("-", ""))) throw new BusinessException("CPF Inválido!");
+        if (!isCPF(Mask.removeMaskCPF(cpf))) throw new BusinessException("CPF Inválido!");
     }
 
     // Validador genérico de cpf - fonte:https://www.devmedia.com.br/validando-o-cpf-em-uma-aplicacao-java/22097

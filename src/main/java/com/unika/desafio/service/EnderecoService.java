@@ -40,8 +40,7 @@ public class EnderecoService {
             Endereco endereco = mapper.map(requestDto, Endereco.class);
             endereco.setMonitorador(monitorador);
 
-            // Todo GERA um bug (além do bug, tem que impedir de deletar o endereço principal será?)
-            endereco.setPrincipal(!temOutroEnderecoPrincipal(monitorador.getId())); // Setar o endereço como principal se não tiver outro.
+            if (endereco.getPrincipal() == null) endereco.setPrincipal(true);// Setar o endereço principal false se for null
 
             repository.save(endereco);
             return mapper.map(endereco, ResponseEnderecoDto.class);

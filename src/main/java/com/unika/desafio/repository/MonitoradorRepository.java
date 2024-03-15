@@ -4,6 +4,7 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.model.PessoaFisica;
 import com.unika.desafio.model.TipoPessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> {
+public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> , JpaSpecificationExecutor<Monitorador> {
 
     boolean existsByEmail(String email);
 
@@ -49,12 +50,4 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> 
 
     @Query(value = "SELECT pj FROM PessoaJuridica pj WHERE pj.cnpj ILIKE %:cnpj%")
     List<Monitorador> findByCnpjContaining(String cnpj);
-
-    List<Monitorador> findByTipoPessoa(TipoPessoa tipoPessoa);
-
-    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.tipoPessoa = 0")
-    List<PessoaFisica> findByAllPF();
-
-    @Query(value = "SELECT pf FROM PessoaFisica pf WHERE pf.id = :id")
-    Optional<PessoaFisica> findByIdPF(Long id);
 }

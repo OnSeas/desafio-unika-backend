@@ -37,23 +37,6 @@ public class RequestPessoaDto {
 
     List<RequestEnderecoDto> enderecoList;
 
-   // Para validações de repetição no Banco de dados
-   public String getCpfSemFormatacao(){
-       return this.cpf.replaceAll("[.]", "").replaceAll("[-]", "");
-   }
-
-    public String getCnpjSemFormatacao(){
-        return this.cnpj.replaceAll("[.]", "").replaceAll("[/]", "").replaceAll("[-]", "");
-    }
-
-    public String getRGSemFormatacao(){
-        return this.rg.replaceAll("[.]", "").replaceAll("[-]", "");
-    }
-
-    public void setTipoPessoaInt(Integer value){
-       this.tipoPessoa = TipoPessoa.getTipo(value);
-    }
-
     @Override
     public String toString() {
         return "RequestPessoaDto{" +

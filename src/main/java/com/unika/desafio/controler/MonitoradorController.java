@@ -2,6 +2,7 @@ package com.unika.desafio.controler;
 
 import com.unika.desafio.dto.*;
 import com.unika.desafio.exceptions.BusinessException;
+import com.unika.desafio.filtros.FiltroMonitoradorDTO;
 import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
@@ -16,11 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -120,8 +117,8 @@ public class MonitoradorController {
     }
 
     // Filtro
-    @PostMapping("/filtro")
-    public ResponseEntity<?> filtrarMonitorador(@RequestBody FiltroDTO filtro){
+    @GetMapping("/filtro")
+    public ResponseEntity<?> filtrarMonitorador(@RequestParam FiltroMonitoradorDTO filtro){
         try {
             return new ResponseEntity<>(monitoradorService.buscarMonitoradoresFiltro(filtro), HttpStatus.OK);
         } catch (BusinessException e){

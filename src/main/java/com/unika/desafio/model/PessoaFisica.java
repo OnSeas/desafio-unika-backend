@@ -1,6 +1,9 @@
 package com.unika.desafio.model;
 
+import com.unika.desafio.mask.Mask;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class PessoaFisica extends Monitorador{
@@ -8,6 +11,8 @@ public class PessoaFisica extends Monitorador{
     @Column(name = "CPF", nullable = false)
     private String cpf;
 
+    @Getter
+    @Setter
     @Column(name = "NOME", nullable = false)
     private String nome;
 
@@ -15,52 +20,19 @@ public class PessoaFisica extends Monitorador{
     private String rg;
 
     public String getCpf() {
-        return aplicarMascaraCpf(cpf);
+        return Mask.applyMaskCPF(this.cpf);
     }
 
     public void setCpf(String cpf) {
-        this.cpf = removerFormatacaoCpf(cpf);
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+        this.cpf = Mask.removeMaskCPF(cpf);
     }
 
     public String getRg() {
-        return aplicarMascaraRg(this.rg);
+        return Mask.applyMaskRG(this.rg);
     }
 
     public void setRg(String rg) {
-        this.rg = removerFormatacaoRg(rg);
-    }
-
-    // Máscaras de CPF
-    private String removerFormatacaoCpf(String cpf) {
-        return cpf.replaceAll("[.]", "").replaceAll("[-]", "");
-    }
-
-    private String aplicarMascaraCpf(String cpf){
-        StringBuilder cpfBuilder = new StringBuilder(cpf);
-        cpfBuilder.insert(9, "-");
-        cpfBuilder.insert(6, ".");
-        cpfBuilder.insert(3, ".");
-        return cpfBuilder.toString();
-    }
-
-    private String removerFormatacaoRg(String rg){
-        return rg.replaceAll("[.]", "").replaceAll("[-]", "");
-    }
-
-    private String aplicarMascaraRg(String rg){
-        StringBuilder rgBuilder = new StringBuilder(rg);
-        rgBuilder.insert(8, "-");
-        rgBuilder.insert(5, ".");
-        rgBuilder.insert(2,".");
-        return rgBuilder.toString();
+        this.rg = Mask.removeMaskRG(rg);
     }
 
     @Override

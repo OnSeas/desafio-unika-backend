@@ -3,6 +3,8 @@ package com.unika.desafio.service;
 import com.unika.desafio.dto.*;
 import com.unika.desafio.exceptions.BusinessException;
 import com.unika.desafio.exceptions.ErrorCode;
+import com.unika.desafio.filtros.FiltroMonitoradorDTO;
+import com.unika.desafio.mask.Mask;
 import com.unika.desafio.model.*;
 import com.unika.desafio.repository.MonitoradorRepository;
 import com.unika.desafio.validations.monitorador.IMonitoradorValid;
@@ -46,6 +48,7 @@ public class MonitoradorService {
 
     @Transactional
     public ResponsePessoaDto cadastrarMonitorador(RequestPessoaDto requestDto){
+        if(requestDto.getTipoPessoa() == null) throw new BusinessException("É necessário selecionar um tipo de pessoa!"); // Se for null, pode causar erro no chain de validações
         monitoradorValid.forEach(v -> v.validar(requestDto)); // Validações do request de monitorador
         Monitorador monitorador = getMonitoradorByTipo(requestDto);
         monitorador.ativar();
@@ -85,6 +88,7 @@ public class MonitoradorService {
     }
 
     public ResponsePessoaDto atualizarMonitorador(RequestPessoaDto requestDto, Long id){
+        if(requestDto.getTipoPessoa() == null) throw new BusinessException("É necessário selecionar um tipo de pessoa!"); // Se for null, pode causar erro no chain de validações
         monitoradorValid.forEach(v -> v.validar(requestDto, id)); // Validações do request de monitorador
 
         Optional<Monitorador> optionalMonitorador = repository.findById(id);
@@ -143,15 +147,15 @@ public class MonitoradorService {
     }
 
     // Pesquisas
-    public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroDTO filtro){ // TODO descobrir se tem uma maneira mais eficiente (mais rápida)
+    public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroMonitoradorDTO filtro){ // TODO descobrir se tem uma maneira mais eficiente (mais rápida)
         System.out.println(filtro);
 
         List<Monitorador> monitoradorList;
         if (filtro.getBusca() == null || filtro.getBusca().isBlank() || filtro.getTipoBusca() == null) monitoradorList = repository.findAll();
         else switch (filtro.getTipoBusca()){
             case EMAIL ->monitoradorList = repository.findByEmailContaining(filtro.getBusca());
-            case CPF -> {filtro.setBusca(limparBusca(filtro.getBusca())); monitoradorList = repository.findByCpfContaining(filtro.getBusca());}
-            case CNPJ -> {filtro.setBusca(limparBusca(filtro.getBusca())); monitoradorList = repository.findByCnpjContaining(filtro.getBusca());}
+            case CPF -> {filtro.setBusca(Mask.removeMaskCPF(filtro.getBusca())); monitoradorList = repository.findByCpfContaining(filtro.getBusca());}
+            case CNPJ -> {filtro.setBusca(Mask.removeMaskCNPJ(filtro.getBusca())); monitoradorList = repository.findByCnpjContaining(filtro.getBusca());}
             default -> throw new BusinessException("Algo deu errado na pesquisa!");
         };
 
@@ -166,10 +170,6 @@ public class MonitoradorService {
                 .stream()
                 .map(m -> mapper.map(m, ResponsePessoaDto.class))
                 .collect(Collectors.toList());
-    }
-
-    private String limparBusca(String busca){
-        return busca.replaceAll("\\.", "").replaceAll("-", "").replaceAll("/", "");
     }
 
     // Funções usando apache POI, referências usadas: https://www.devmedia.com.br/apache-poi-manipulando-documentos-em-java/31778

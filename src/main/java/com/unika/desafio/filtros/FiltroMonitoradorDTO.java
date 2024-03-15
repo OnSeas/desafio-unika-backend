@@ -1,13 +1,12 @@
-package com.unika.desafio.dto;
+package com.unika.desafio.filtros;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FiltroDTO {
+public class FiltroMonitoradorDTO {
     private String busca;
     private TipoBusca tipoBusca;
     private Boolean pessoaFisica;
@@ -25,17 +24,6 @@ public class FiltroDTO {
         TipoBusca(int value){
             this.value = value;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "FiltroDTO{" +
-                "busca='" + busca + '\'' +
-                ", tipoBusca=" + tipoBusca +
-                ", pessoaFisica=" + pessoaFisica +
-                ", pessoaJuridica=" + pessoaJuridica +
-                ", soAtivados=" + soAtivados +
-                '}';
     }
 }
 

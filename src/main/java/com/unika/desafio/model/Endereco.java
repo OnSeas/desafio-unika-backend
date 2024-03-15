@@ -3,148 +3,79 @@ package com.unika.desafio.model;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.unika.desafio.mask.Mask;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "ESTAGIO_ENDERECO")
 public class Endereco {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_ENDERECO", nullable = false)
     private Long id;
 
+    @Setter
+    @Getter
     @Column(name = "ENDERECO", nullable = false)
     private String endereco;
 
+    @Setter
+    @Getter
     @Column(name = "NUMERO", nullable = false)
     private String numero;
 
     @Column(name = "CEP", nullable = false)
     private String cep;
 
+    @Setter
+    @Getter
     @Column(name = "BAIRRO", nullable = false)
     private String bairro;
 
     @Column(name = "TELEFONE", nullable = false)
     private String telefone;
 
+    @Setter
+    @Getter
     @Column(name = "CIDADE", nullable = false)
     private String cidade;
 
+    @Setter
+    @Getter
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "ESTADO", nullable = false)
     private UF estado;
 
+    @Setter
+    @Getter
     @Column(name = "PRINCIPAL", nullable = false)
     private Boolean principal;
 
+    @Setter
+    @Getter
     @ManyToOne
     @JsonBackReference
     private Monitorador monitorador;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
     public String getCep() {
-        return aplicarFormacataoCep(this.cep);
+        return Mask.apllyMaskCEP(this.cep);
     }
 
     public void setCep(String cep) {
-        this.cep = removerFormacataoCep(cep);
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
+        this.cep = Mask.removeMaskCEP(cep);
     }
 
     public String getTelefone() {
-        return aplicarFormatacaoTelefone(this.telefone);
+        return Mask.apllyMaskTelefone(this.telefone);
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = removerFormatacaoTelefone(telefone);
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public UF getEstado() {
-        return estado;
-    }
-
-    public void setEstado(UF estado) {
-        this.estado = estado;
-    }
-
-    public Boolean getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(Boolean principal) {
-        this.principal = principal;
-    }
-
-    public Monitorador getMonitorador() {
-        return monitorador;
-    }
-
-    public void setMonitorador(Monitorador monitorador) {
-        this.monitorador = monitorador;
-    }
-
-
-    // Utilização de máscaras para transformação de Model Dto
-    private String removerFormacataoCep(String cep) {
-        return cep.replaceAll("[-]", "");
-    }
-
-    private String removerFormatacaoTelefone(String telefone){
-        return telefone.replaceAll("[(]", "").replaceAll("[)]", "").replaceAll("[-]", "");
-    }
-
-    private String aplicarFormacataoCep(String cep) {
-        StringBuilder cepBuilder = new StringBuilder(cep);
-        cepBuilder.insert(5, "-");
-        return cepBuilder.toString();
-    }
-
-    private String aplicarFormatacaoTelefone(String telefone){
-        StringBuilder telefoneBuilder = new StringBuilder(telefone);
-        telefoneBuilder.insert(telefone.length()-4, "-");
-        telefoneBuilder.insert(2, ")");
-        telefoneBuilder.insert(0, "(");
-        return telefoneBuilder.toString();
+        this.telefone = Mask.removeMaskTelefone(telefone);
     }
 
     @Override
