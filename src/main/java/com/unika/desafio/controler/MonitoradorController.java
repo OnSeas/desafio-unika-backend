@@ -7,6 +7,7 @@ import com.unika.desafio.model.Monitorador;
 import com.unika.desafio.service.EnderecoService;
 import com.unika.desafio.service.MonitoradorService;
 import com.unika.desafio.service.ReportService;
+import jakarta.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -118,7 +119,15 @@ public class MonitoradorController {
 
     // Filtro
     @GetMapping("/filtro")
-    public ResponseEntity<?> filtrarMonitorador(@RequestParam FiltroMonitoradorDTO filtro){
+    public ResponseEntity<?> filtrarMonitorador(
+            @RequestParam @Nullable String busca,
+            @RequestParam @Nullable Integer tipoBusca,
+            @RequestParam @Nullable Boolean soAtivados,
+            @RequestParam @Nullable Boolean pessoaFisica,
+            @RequestParam @Nullable Boolean pessoaJuridica
+    ){
+        FiltroMonitoradorDTO filtro = new FiltroMonitoradorDTO(busca, FiltroMonitoradorDTO.TipoBusca.getTipo(tipoBusca), pessoaFisica, pessoaJuridica, soAtivados);
+
         try {
             return new ResponseEntity<>(monitoradorService.buscarMonitoradoresFiltro(filtro), HttpStatus.OK);
         } catch (BusinessException e){

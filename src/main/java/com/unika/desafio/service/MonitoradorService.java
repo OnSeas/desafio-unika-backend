@@ -146,26 +146,8 @@ public class MonitoradorService {
         } else throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
     }
 
-    // Pesquisas
-    public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroMonitoradorDTO filtro){ // TODO descobrir se tem uma maneira mais eficiente (mais rápida)
-        System.out.println(filtro);
-
-        List<Monitorador> monitoradorList;
-        if (filtro.getBusca() == null || filtro.getBusca().isBlank() || filtro.getTipoBusca() == null) monitoradorList = repository.findAll();
-        else switch (filtro.getTipoBusca()){
-            case EMAIL ->monitoradorList = repository.findByEmailContaining(filtro.getBusca());
-            case CPF -> {filtro.setBusca(Mask.removeMaskCPF(filtro.getBusca())); monitoradorList = repository.findByCpfContaining(filtro.getBusca());}
-            case CNPJ -> {filtro.setBusca(Mask.removeMaskCNPJ(filtro.getBusca())); monitoradorList = repository.findByCnpjContaining(filtro.getBusca());}
-            default -> throw new BusinessException("Algo deu errado na pesquisa!");
-        };
-
-        if (filtro.getSoAtivados()) monitoradorList = monitoradorList.stream().filter(Monitorador::isAtivo).collect(Collectors.toList());
-
-        if(filtro.getPessoaJuridica() || filtro.getPessoaFisica()){ // Se os dois forem falso mostra ambos.
-            if (!filtro.getPessoaFisica()) monitoradorList = monitoradorList.stream().filter(m -> !m.getTipoPessoa().equals(TipoPessoa.PESSOA_FISICA)).collect(Collectors.toList());
-            if (!filtro.getPessoaJuridica()) monitoradorList = monitoradorList.stream().filter(m -> !m.getTipoPessoa().equals(TipoPessoa.PESSOA_JURIDICA)).collect(Collectors.toList());
-        }
-
+    public List<ResponsePessoaDto> buscarMonitoradoresFiltro(FiltroMonitoradorDTO filtro){
+        List<Monitorador> monitoradorList = repository.findAll(filtro.toSpecification());
         return monitoradorList
                 .stream()
                 .map(m -> mapper.map(m, ResponsePessoaDto.class))
