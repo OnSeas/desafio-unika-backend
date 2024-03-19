@@ -1,6 +1,5 @@
 package com.unika.desafio.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unika.desafio.dto.RequestEnderecoDto;
 import com.unika.desafio.dto.ResponseEnderecoDto;
 import com.unika.desafio.exceptions.BusinessException;
@@ -62,7 +61,6 @@ public class EnderecoService {
         if (enderecoList.isEmpty())
             throw new BusinessException(ErrorCode.MONITORADOR_NAO_ENCONTRADO);
         return enderecoList;
-
     }
 
     public ResponseEnderecoDto getEnderecoPrincipal(Long id){
