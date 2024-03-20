@@ -39,7 +39,7 @@ public class EnderecoService {
             Endereco endereco = mapper.map(requestDto, Endereco.class);
             endereco.setMonitorador(monitorador);
 
-            if (endereco.getPrincipal() == null) endereco.setPrincipal(true);// Setar o endereço principal false se for null
+            if (endereco.getPrincipal() == null) endereco.setPrincipal(false);// Setar o endereço principal false se for null
 
             repository.save(endereco);
             return mapper.map(endereco, ResponseEnderecoDto.class);
